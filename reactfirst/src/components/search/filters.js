@@ -4,7 +4,7 @@ const Filters = ({ filters, handleFilterClick }) => {
   const filterOptions = [
     "Можно с животными",
     "Завтрак включен",
-    "5+ звезд",
+    "5*",
     "Близко к центру",
     "Высокий рейтинг",
   ];

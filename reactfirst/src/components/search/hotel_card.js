@@ -19,7 +19,7 @@ const HotelCard = ({ hotel }) => {
       </div>
 
       {/* Метаданные отеля */}
-      <div className="hotel-info">
+      <div class="hotel-content">
         <h3 className="hotel-name">{hotel?.name || "Неизвестный отель"}</h3>
         <div className="hotel-tags">
           {hotel?.tags?.map((tag, index) => (
@@ -36,10 +36,18 @@ const HotelCard = ({ hotel }) => {
               {hotel?.rating || "N/A"}
             </span>
           </div>
-          <div className="hotel-stars">
-            {Array(hotel?.stars || 0).fill("★").map((star, index) => (
-              <span key={index} className="star">{star}</span>
-            ))} {hotel?.stars || 0} звезды
+          <div class="filters-section">
+            <div class="filters-container">
+              <span class="no-filters-message">Фильтры временно недоступны</span>
+            </div>
+          </div>
+          
+          <div class="hotel-rating">
+            <div className="hotel-stars">
+              {Array(hotel?.stars || 0).fill("★").map((star, index) => (
+                <span key={index} className="star">{star}</span>
+              ))} {hotel?.stars || 0} звезды
+            </div>
           </div>
         </div>
       </div>

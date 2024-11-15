@@ -1,5 +1,6 @@
 package com.hotel.hb_backend.Config;
 
+import com.hotel.hb_backend.Security.JWTAuthFilter;
 import com.hotel.hb_backend.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

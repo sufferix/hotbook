@@ -1,0 +1,31 @@
+  .main-content {
+    text-align: center;
+    padding: 20px;
+  }
+
+  h2 {
+    font-family: "Open Sans", sans-serif;
+    text-align: center;
+    margin-top: 20px;
+    color: rgba(38, 70, 83, 1);
+  }
+  
+  .route-grid {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  .route {
+    text-align: center;
+    width: 150px;
+  }
+  
+  .route img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  

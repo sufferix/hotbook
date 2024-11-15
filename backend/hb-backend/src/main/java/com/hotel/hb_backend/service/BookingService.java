@@ -41,7 +41,7 @@ public class BookingService implements IBookingService {
                 throw new IllegalArgumentException("Дата заезда должна быть после перед датой выезда");
             }
             Room room = roomRepository.findById(roomId).orElseThrow(() -> new MessException("Номер не найден"));
-            User user = userRepository.findById(userId).orElseThrow(() -> new MessException("Пользователь не найден"));
+            User user = userRepository.findById(userId).orElseThrow(() -> new MessException("Пользовател не найден"));
 
             List<Booking> existingBookings = room.getBookings();
 

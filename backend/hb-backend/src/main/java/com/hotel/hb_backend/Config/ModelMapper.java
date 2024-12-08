@@ -139,12 +139,12 @@ public class ModelMapper {
         hotelDTO.setCity(hotel.getCity());
         hotelDTO.setDescription(hotel.getDescription());
         hotelDTO.setStars(hotel.getStars());
-
-        // Фильтр
-
         return hotelDTO;
     }
 
+    public static List<HotelDTO> mapHotelListEntityToHotelListDTO(List<Hotel> hotels) {
+        return hotels.stream().map(ModelMapper::mapHotelEntityToHotelDTO).collect(Collectors.toList());
+    }
 }
 
 

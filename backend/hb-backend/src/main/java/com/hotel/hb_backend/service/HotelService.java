@@ -10,6 +10,7 @@ import com.hotel.hb_backend.Config.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -17,6 +18,42 @@ public class HotelService implements IHotelService {
 
     @Autowired
     private HotelRepository hotelRepository;
+
+    @Override
+    public Response getAllHotels() {
+        Response response = new Response();
+        try {
+            List<Hotel> hotels = hotelRepository.findAll();
+            List<HotelDTO> hotelDTOList = ModelMapper.mapHotelListEntityToHotelListDTO(hotels);
+            response.setStatusCode(200);
+            response.setMessage("Список отелей успешно получен");
+            response.setHotelList(hotelDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при получении списка отелей: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response getHotelById(Long hotelId) {
+        Response response = new Response();
+        try {
+            Hotel hotel = hotelRepository.findById(hotelId)
+                    .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
+            HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(hotel);
+            response.setStatusCode(200);
+            response.setMessage("Информация об отеле успешно получена");
+            response.setHotel(hotelDTO);
+        } catch (MessException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при получении отеля: " + e.getMessage());
+        }
+        return response;
+    }
 
     @Override
     public Response addHotel(String name, String city, String description, int stars) {
@@ -30,7 +67,7 @@ public class HotelService implements IHotelService {
             Hotel savedHotel = hotelRepository.save(hotel);
             HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(savedHotel);
             response.setStatusCode(200);
-            response.setMessage("Отель успешно добавлен.");
+            response.setMessage("Отель успешно добавлен");
             response.setHotel(hotelDTO);
         } catch (Exception e) {
             response.setStatusCode(500);
@@ -40,54 +77,19 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Response getAllHotels() {
-        Response response = new Response();
-        try {
-            List<Hotel> hotelList = hotelRepository.findAll();
-            //List<HotelDTO> hotelDTOList = Utils.mapHotelListEntityToHotelListDTO(hotelList);
-            response.setStatusCode(200);
-            response.setMessage("Отели успешно получены.");
-            //response.setHotelList(hotelDTOList);
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при получении отелей: " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response getHotelById(Long hotelId) {
-        Response response = new Response();
-        try {
-            Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new MessException("Отель не найден"));
-            HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(hotel);
-            response.setStatusCode(200);
-            response.setMessage("Отель успешно получен.");
-            response.setHotel(hotelDTO);
-        } catch (MessException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при получении отеля: " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
     public Response updateHotel(Long hotelId, String name, String city, String description, int stars) {
         Response response = new Response();
         try {
-            Hotel hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new MessException("Отель не найден"));
-            if (name != null) hotel.setName(name);
-            if (city != null) hotel.setCity(city);
-            if (description != null) hotel.setDescription(description);
+            Hotel hotel = hotelRepository.findById(hotelId)
+                    .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
+            hotel.setName(name);
+            hotel.setCity(city);
+            hotel.setDescription(description);
             hotel.setStars(stars);
-
             Hotel updatedHotel = hotelRepository.save(hotel);
             HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(updatedHotel);
             response.setStatusCode(200);
-            response.setMessage("Отель успешно обновлен.");
+            response.setMessage("Информация об отеле успешно обновлена");
             response.setHotel(hotelDTO);
         } catch (MessException e) {
             response.setStatusCode(404);
@@ -103,10 +105,11 @@ public class HotelService implements IHotelService {
     public Response deleteHotel(Long hotelId) {
         Response response = new Response();
         try {
-            hotelRepository.findById(hotelId).orElseThrow(() -> new MessException("Отель не найден"));
-            hotelRepository.deleteById(hotelId);
+            Hotel hotel = hotelRepository.findById(hotelId)
+                    .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
+            hotelRepository.delete(hotel);
             response.setStatusCode(200);
-            response.setMessage("Отель успешно удален.");
+            response.setMessage("Отель успешно удален");
         } catch (MessException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -116,4 +119,21 @@ public class HotelService implements IHotelService {
         }
         return response;
     }
+
+    public Response findHotelsWithAvailableRoomsByFilters(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String city, int stars) {
+        Response response = new Response();
+        try {
+            List<Hotel> hotels = hotelRepository.findHotelsWithAvailableRoomsByFilters(checkInDate, checkOutDate, roomType, city, stars);
+            List<HotelDTO> hotelDTOList = ModelMapper.mapHotelListEntityToHotelListDTO(hotels);
+
+            response.setStatusCode(200);
+            response.setMessage("Успешно");
+            response.setHotelList(hotelDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при фильтрации отелей: " + e.getMessage());
+        }
+        return response;
+    }
 }
+

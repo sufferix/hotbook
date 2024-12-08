@@ -10,5 +10,5 @@ public interface IHotelService {
     Response getHotelById(Long hotelId);
     Response updateHotel(Long hotelId, String name, String city, String description, int stars);
     Response deleteHotel(Long hotelId);
-    //Response findAvailableHotels(String city, LocalDate checkInDate, LocalDate checkOutDate);
+    Response findHotelsWithAvailableRoomsByFilters(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String city, int stars);
 }

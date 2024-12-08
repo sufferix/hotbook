@@ -12,18 +12,21 @@ import java.util.List;
 @Entity
 @Table(name = "rooms")
 public class Room {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String roomType;
+
     private BigDecimal roomPrice;
+
     private String roomPhotoUrl;
+
     private String roomDescription;
+
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;

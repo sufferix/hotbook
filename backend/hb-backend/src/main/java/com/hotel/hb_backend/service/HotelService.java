@@ -8,6 +8,7 @@ import com.hotel.hb_backend.Repository.HotelRepository;
 import com.hotel.hb_backend.ServiceInterface.IHotelService;
 import com.hotel.hb_backend.Config.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -123,7 +124,23 @@ public class HotelService implements IHotelService {
     public Response findHotelsWithAvailableRoomsByFilters(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String city, int stars) {
         Response response = new Response();
         try {
-            List<Hotel> hotels = hotelRepository.findHotelsWithAvailableRoomsByFilters(checkInDate, checkOutDate, roomType, city, stars);
+            List<Hotel> hotels = hotelRepository.findHotelsWithAvailableRoomsByFilters(checkInDate, checkOutDate, city,roomType,stars);
+            List<HotelDTO> hotelDTOList = ModelMapper.mapHotelListEntityToHotelListDTO(hotels);
+
+            response.setStatusCode(200);
+            response.setMessage("Успешно");
+            response.setHotelList(hotelDTOList);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при фильтрации отелей: " + e.getMessage());
+        }
+        return response;
+    }
+    public Response findHotelsWithAvailableRoomsByFilters2(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String city, Integer stars) {
+        Response response = new Response();
+        try {
+            Specification<Hotel> specification = HotelSpecification.withFilters(city, stars, roomType, checkInDate, checkOutDate);
+            List<Hotel> hotels = hotelRepository.findAll(specification);
             List<HotelDTO> hotelDTOList = ModelMapper.mapHotelListEntityToHotelListDTO(hotels);
 
             response.setStatusCode(200);
@@ -136,4 +153,5 @@ public class HotelService implements IHotelService {
         return response;
     }
 }
+
 

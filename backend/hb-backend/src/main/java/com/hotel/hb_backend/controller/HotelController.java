@@ -91,6 +91,17 @@ public class HotelController {
         Response response = hotelService.findHotelsWithAvailableRoomsByFilters(checkInDate, checkOutDate, roomType, city, stars);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
+    @GetMapping("/filter2")
+    public ResponseEntity<Response> getFilteredHotels(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String roomType,
+            @RequestParam(required = false) Integer stars
+    ) {
+        Response response = hotelService.findHotelsWithAvailableRoomsByFilters(checkInDate, checkOutDate, roomType, city, stars);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 }
+
 

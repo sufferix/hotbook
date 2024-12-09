@@ -3,6 +3,7 @@ package com.hotel.hb_backend.service;
 import com.hotel.hb_backend.dto.LoginRequest;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.UserDTO;
+import com.hotel.hb_backend.entity.Role;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.ServiceInterface.IUserService;
@@ -27,13 +28,12 @@ public class UserService implements IUserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-
     @Override
     public Response register(User user) {
         Response response = new Response();
         try {
-            if (user.getRole() == null || user.getRole().isBlank()) {
-                user.setRole("USER");
+            if (user.getRole() == null ) {
+                user.setRole(Role.USER);
             }
             if (userRepository.existsByEmail(user.getEmail())) {
                 throw new MessException(user.getEmail() + "Уже существует");
@@ -157,7 +157,7 @@ public class UserService implements IUserService {
             User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() -> new MessException("Пользователь не найден"));
             UserDTO userDTO = ModelMapper.mapUserEntityToUserDTO(user);
             response.setStatusCode(200);
-            response.setMessage("successful");
+            response.setMessage("Успех");
             response.setUser(userDTO);
 
         } catch (MessException e) {
@@ -193,6 +193,31 @@ public class UserService implements IUserService {
             response.setStatusCode(500);
             response.setMessage("Ошибка при получении пользователей " + e.getMessage());
         }
+        return response;
+    }
+    public Response blockUser(String userId, boolean enable) {
+        Response response = new Response();
+
+        try {
+            User user = userRepository.findById(Long.valueOf(userId))
+                    .orElseThrow(() -> new MessException("Пользователь не найден"));
+            if (user.getRole() == Role.ADMIN) {
+                throw new MessException("Нельзя заблокировать администратора!");
+            }
+            user.setEnabled(enable);
+            userRepository.save(user);
+
+            response.setStatusCode(200);
+            response.setMessage(enable ? "Пользователь активирован" : "Пользователь заблокирован");
+
+        } catch (MessException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при изменении статуса пользователя: " + e.getMessage());
+        }
+
         return response;
     }
 }

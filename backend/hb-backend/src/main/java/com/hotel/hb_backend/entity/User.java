@@ -33,16 +33,21 @@ public class User implements UserDetails {
     @NotBlank(message = "Пароль обязателен")
     private String password;
 
-    private String role;
-
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    private boolean isEnabled = true;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
     @Override
     public String getUsername() {
         return email;
@@ -63,8 +68,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

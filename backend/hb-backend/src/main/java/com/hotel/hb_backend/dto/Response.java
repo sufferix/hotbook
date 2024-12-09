@@ -2,6 +2,7 @@ package com.hotel.hb_backend.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.hotel.hb_backend.entity.Role;
 import lombok.Data;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class Response {
     private String message;
 
     private String token;
-    private String role;
+    private Role role;
     private String expirationTime;
     private String bookingConfirmationCode;
     private HotelDTO hotel;
@@ -25,5 +26,6 @@ public class Response {
     private List<RoomDTO> roomList;
     private List<BookingDTO> bookingList;
     private List<HotelDTO> hotelList;
-
+    private ApplicationFormDTO applicationForm;
+    private List<ApplicationFormDTO> applicationFormList;
 }

@@ -53,6 +53,12 @@ public class UserController {
         Response response = userService.getUserBookingHistory(userId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+    @PutMapping("/block/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Response> blockUser(@PathVariable("userId") String userId, @RequestParam boolean enable) {
+        Response response = userService.blockUser(userId, enable);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 
 
 }

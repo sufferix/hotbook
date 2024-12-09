@@ -1,13 +1,7 @@
 package com.hotel.hb_backend.Config;
 
-import com.hotel.hb_backend.dto.HotelDTO;
-import com.hotel.hb_backend.dto.RoomDTO;
-import com.hotel.hb_backend.dto.UserDTO;
-import com.hotel.hb_backend.entity.Booking;
-import com.hotel.hb_backend.dto.BookingDTO;
-import com.hotel.hb_backend.entity.Hotel;
-import com.hotel.hb_backend.entity.Room;
-import com.hotel.hb_backend.entity.User;
+import com.hotel.hb_backend.dto.*;
+import com.hotel.hb_backend.entity.*;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -145,6 +139,24 @@ public class ModelMapper {
     public static List<HotelDTO> mapHotelListEntityToHotelListDTO(List<Hotel> hotels) {
         return hotels.stream().map(ModelMapper::mapHotelEntityToHotelDTO).collect(Collectors.toList());
     }
+    public static ApplicationFormDTO mapApplicationFormToDTO(ApplicationForm form) {
+        ApplicationFormDTO dto = new ApplicationFormDTO();
+        dto.setId(form.getId());
+        dto.setUserId(form.getUser().getId());
+        dto.setFullName(form.getFullName());
+        dto.setEmail(form.getEmail());
+        dto.setPhoneNumber(form.getPhoneNumber());
+        dto.setCity(form.getCity());
+        dto.setAddress(form.getAddress());
+        dto.setHotelName(form.getHotelName());
+        dto.setProcessed(form.isProcessed());
+        return dto;
+    }
+
+    public static List<ApplicationFormDTO> mapApplicationFormListToDTO(List<ApplicationForm> forms) {
+        return forms.stream().map(ModelMapper::mapApplicationFormToDTO).collect(Collectors.toList());
+    }
+
 }
 
 

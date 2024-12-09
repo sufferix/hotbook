@@ -18,5 +18,5 @@ public interface IUserService {
     Response getUserById(String userId);
 
     Response getMyInfo(String email);
-
+    Response blockUser(String userId, boolean enable);
 }

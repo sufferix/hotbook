@@ -17,18 +17,15 @@ public class ApplicationFormController {
     @Autowired
     private ApplicationFormService applicationFormService;
 
-    /**
-     * Пользователь отправляет анкету.
-     */
+    //Пользователь отправляет анкету.
     @PostMapping("/submit")
     public ResponseEntity<Response> submitApplication(@RequestBody ApplicationFormDTO applicationFormDTO) {
         Response response = applicationFormService.submitApplicationForm(applicationFormDTO);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    /**
-     * Администратор получает список необработанных анкет.
-     */
+    //Администратор получает список необработанных анкет.
+
     @GetMapping("/pending")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<ApplicationFormDTO>> getPendingApplications() {
@@ -36,9 +33,7 @@ public class ApplicationFormController {
         return ResponseEntity.ok(forms);
     }
 
-    /**
-     * Администратор обрабатывает анкету.
-     */
+    //Администратор обрабатывает анкету
     @PostMapping("/process/{formId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> processApplication(@PathVariable Long formId, @RequestParam boolean accept) {

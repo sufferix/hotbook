@@ -149,7 +149,7 @@ public class ModelMapper {
         dto.setCity(form.getCity());
         dto.setAddress(form.getAddress());
         dto.setHotelName(form.getHotelName());
-        dto.setProcessed(form.isProcessed());
+        dto.setProcessed(form.getProcessed());
         return dto;
     }
 

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ApplicationFormService {
@@ -39,7 +38,7 @@ public class ApplicationFormService {
             form.setCity(applicationFormDTO.getCity());
             form.setAddress(applicationFormDTO.getAddress());
             form.setHotelName(applicationFormDTO.getHotelName());
-
+            form.setProcessed(null);
             applicationFormRepository.save(form);
 
             response.setStatusCode(200);
@@ -56,7 +55,7 @@ public class ApplicationFormService {
     }
 
     public List<ApplicationFormDTO> getPendingApplications() {
-        List<ApplicationForm> forms = applicationFormRepository.findByProcessed(false);
+        List<ApplicationForm> forms = applicationFormRepository.findUnprocessedApplications();
         return ModelMapper.mapApplicationFormListToDTO(forms);
     }
 

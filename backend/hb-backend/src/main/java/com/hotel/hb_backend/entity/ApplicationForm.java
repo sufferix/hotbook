@@ -38,6 +38,6 @@ public class ApplicationForm {
 
     @NotNull
     private String hotelName;
-
-    private boolean processed = false; // Флаг, обработана ли заявка
+    @Column(name = "processed", nullable = true)
+    private Boolean processed ;
 }

@@ -75,24 +75,6 @@ public class HotelController {
     }
     @GetMapping("/filter")
     public ResponseEntity<Response> getFilteredHotels(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
-            @RequestParam String city,
-            @RequestParam String roomType,
-            @RequestParam int stars
-    ) {
-        if (checkInDate == null || checkOutDate == null || roomType == null || roomType.isBlank() || stars <= 0) {
-            Response response = new Response();
-            response.setStatusCode(400);
-            response.setMessage("Все параметры (даты, тип номера, звезды) обязательны");
-            return ResponseEntity.status(400).body(response);
-        }
-
-        Response response = hotelService.findHotelsWithAvailableRoomsByFilters(checkInDate, checkOutDate, roomType, city, stars);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-    @GetMapping("/filter2")
-    public ResponseEntity<Response> getFilteredHotels(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkInDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkOutDate,
             @RequestParam(required = false) String city,

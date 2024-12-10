@@ -17,6 +17,7 @@
     justify-content: center;
     flex-wrap: wrap;
     margin-top: 20px;
+    margin-left: 90px; /* потом убрать */
   }
   
   .route {

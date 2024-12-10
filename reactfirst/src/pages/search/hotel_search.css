@@ -1,26 +1,85 @@
 /* HotelSearchPage */
 .hotel-search-page {
   display: flex;
+  height: 100vh; /* Высота страницы */
+  width: 100vw; /* Ширина страницы */
+}
+
+.map-container {
+  flex: 1; /* Карта занимает всё доступное пространство слева */
+  background-color: #f0f0f0; /* Серый фон, пока карта не загрузится */
+}
+
+.search-container {
+  flex: 1; /* Правая часть занимает 50% ширины */
+  display: flex;
   flex-direction: column;
-  height: 100vh;
+  padding: 20px;
+  background-color: #fff;
+  overflow-y: auto; /* Добавляем прокрутку, если контент выходит за пределы */
+}
+
+.search-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input,
+.date-input,
+.guest-input,
+.search-button {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.search-button {
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+.hotel-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.hotel-card {
+  display: flex;
+  gap: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
   background-color: #f9f9f9;
+}
+
+.hotel-image-placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.hotel-info {
+  flex: 1; /* Описание отеля занимает всё доступное пространство */
+}
+
+.hotel-price {
+  text-align: right;
+  font-weight: bold;
+  color: #007bff;
 }
 
 .main-content {
   display: flex;
   flex: 1;
-}
-
-.map-placeholder {
-  flex: 1;
-  background-color: #ddd;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #333;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border-right: 1px solid #ccc;
 }
 
 .search-section {
@@ -128,6 +187,12 @@
   color: white;
 }
 
+.no-filters-message {
+  font-size: 0.9rem;
+  color: #888;
+  font-style: italic;
+}
+
 /* HotelCard */
 .hotel-card {
   display: grid;
@@ -195,7 +260,7 @@
 .hotel-rating {
   display: flex;
   align-items: bottom;
-  align-items: center;
+  /*align-items: center;*/
   gap: 10px;
 }
 
@@ -243,9 +308,28 @@
   color: #666;
 }
 
-.no-filters-message {
-  font-size: 0.9rem;
-  color: #888;
-  font-style: italic;
+.hotel-card-link {
+  text-decoration: none; /* Убираем подчёркивание */
+  color: inherit; /* Наследуем цвет текста */
+  display: block; /* Обеспечиваем кликабельность всей карточки */
 }
+
+.hotel-card-link:hover {
+  color: inherit; /* Исключаем изменения цвета при наведении */
+  text-decoration: none; /* Подтверждаем отсутствие подчеркивания */
+}
+
+.hotel-card {
+  cursor: pointer; /* Добавляем курсор для указания кликабельности */
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  transition: transform 0.2s; /* Эффект при наведении */
+}
+
+.hotel-card:hover {
+  transform: scale(1.02); /* Лёгкое увеличение карточки */
+}
+
 

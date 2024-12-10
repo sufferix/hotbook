@@ -1,35 +1,49 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components//header/header";
+import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from "react-router-dom";
+import Header from "./components/header/header";
 import AuthModal from "./components/auth/AuthModal";
 import Home from "./pages/homepage/home";
 import HotelSearchPage from "./pages/search/hotel_search";
+import HotelInfoPage from "./pages/hotel_page/hotel_page";
+import ClientDashboard from "./pages/user_acc/client_dashboard";
 import "./App.css";
 
 function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const toggleLoginModal = () => {
-    setIsModalOpen(!isModalOpen);
+  const toggleLoginModal = () => setIsModalOpen(!isModalOpen);
+
+  // Обработчик для успешного входа/регистрации
+  const handleLogin = () => {
+    setIsAuthenticated(true); // Устанавливаем состояние авторизации
+    setIsModalOpen(false); // Закрываем модальное окно
   };
 
   return (
     <Router>
       <div className="App">
-        {/* Хедер с логотипом и иконкой пользователя */}
-        <Header onIconClick={toggleLoginModal} />
+        {/* Хедер с иконкой пользователя */}
+        <Header
+  isAuthenticated={isAuthenticated}
+  onUserIconClick={toggleLoginModal}
+/>
 
-        {/* Маршруты */}
+        {/* Основные маршруты */}
         <Routes>
-          {/* Главная страница */}
           <Route path="/" element={<Home />} />
-
-          {/* Страница поиска отелей */}
           <Route path="/search" element={<HotelSearchPage />} />
+          <Route path="/info" element={<HotelInfoPage />} />
+          <Route path="/dashboard/client" element={<ClientDashboard />} />
         </Routes>
 
-        {/* Модальное окно для авторизации */}
-        {isModalOpen && <AuthModal onClose={toggleLoginModal} />}
+        {/* Модальное окно авторизации */}
+        {isModalOpen && (
+          <AuthModal
+            onClose={() => setIsModalOpen(false)}
+            onLogin={handleLogin}
+          />
+        )}
       </div>
     </Router>
   );

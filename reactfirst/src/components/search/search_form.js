@@ -23,13 +23,13 @@ const SearchForm = ({ city, setCity, startDate, setStartDate, endDate, setEndDat
       <DatePicker
         selected={startDate}
         onChange={(date) => setStartDate(date)}
-        dateFormat="dd.MMM"
+        dateFormat="dd MMM"
         className="input-field"
       />
       <DatePicker
         selected={endDate}
         onChange={(date) => setEndDate(date)}
-        dateFormat="dd.MMM"
+        dateFormat="dd MMM"
         className="input-field"
       />
       <div className="guest-counter">

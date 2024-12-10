@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import SearchForm from "../../components/search/search_form";
 import Filters from "../../components/search/filters";
 import HotelCard from "../../components/search/hotel_card";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "./hotel_search.css";
 
 const HotelSearchPage = () => {
@@ -59,11 +60,13 @@ const HotelSearchPage = () => {
 
   return (
     <div className="hotel-search-page">
-      <div className="main-content">
-        {/* Плейсхолдер для карты */}
-        <div className="map-placeholder">
-          <p>Карта будет добавлена здесь</p>
-        </div>
+    <div className="map-container">
+      <MapContainer center={[55.751244, 37.618423]} zoom={10} style={{ height: "400px", width: "100%" }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        />
+      </MapContainer>
 
         {/* Правая часть с формой и результатами */}
         <div className="search-section">

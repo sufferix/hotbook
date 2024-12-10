@@ -1,0 +1,207 @@
+.client-dashboard {
+    padding: 20px;
+    font-family: 'Open Sans', sans-serif;
+    max-width: 1200px; /* Ограничиваем ширину страницы */
+    margin: 0 auto; /* Центрируем страницу */
+    padding: 20px 20px; /* Задаем одинаковые отступы слева и справа */
+  }
+  
+  .dashboard-header h1 {
+    text-align: left;
+    font-size: 3rem;
+    color: rgb(38, 70, 83);
+  }
+
+  h2 {
+    text-align: left;
+    font-size: 2rem;
+    color: rgb(38, 70, 83);
+    margin-bottom: 30px;
+  }
+  
+  .profile-section {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 50px;
+  }
+  
+  .avatar-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #ddd;
+  }
+  
+  .user-name {
+    font-size: 2rem;
+    font-weight: normal;
+    color: #344e61;
+    margin: 0 0 5px 0;
+  }
+  
+  .user-email {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0 0 10px 0;
+  }
+  
+  .edit-button {
+    background-color: #344e61;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-button:hover {
+    background-color: #2a3c4f;
+  }
+  
+  
+  .edit-button, .save-button, .cancel-button, .book-now-button {
+    background-color: #344e61;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .booking-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    gap: 15px;
+    max-width: 800px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .hotel-image-placeholder {
+    width: 100px;
+    height: 80px;
+    background-color: #ddd;
+    border-radius: 5px;
+  }
+  
+  .booking-details {
+    flex: 1;
+    margin-left: 15px;
+  }
+  
+  .hotel-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+  }
+  
+  .room-category {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  .booking-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: right;
+  }
+  
+  .date-info, .guests-info {
+    font-size: 1rem;
+    background-color: #f5f5f5;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: not-allowed; /* Показывает, что информация неизменяемая */
+    color: #999;
+    border: 1px solid #e0e0e0;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .date-info span, .guests-info span {
+    margin-right: 5px;
+  }
+  
+  .cancel-button {
+    background-color: #344e61;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .cancel-button:hover {
+    background-color: #2a3c4f;
+  }
+  
+  
+  .no-booking {
+    text-align: center;
+  }
+  
+  .profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .profile-edit-form h2 {
+    font-size: 1.5rem;
+    color: #344e61;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Центрируем элементы внутри формы */
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  input:read-only {
+    background-color: #f9f9f9;
+    cursor: not-allowed;
+  }
+  
+  .save-button {
+    background-color: #344e61;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .save-button:hover {
+    background-color: #2a3c4f;
+  }
+  

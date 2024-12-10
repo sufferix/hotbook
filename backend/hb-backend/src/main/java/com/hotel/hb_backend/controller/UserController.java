@@ -3,6 +3,7 @@ package com.hotel.hb_backend.controller;
 
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.ServiceInterface.IUserService;
+import com.hotel.hb_backend.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +18,6 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
-
 
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -59,6 +59,15 @@ public class UserController {
         Response response = userService.blockUser(userId, enable);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+    @PutMapping("/update-profile")
+    public ResponseEntity<Response> updateUserProfile(@RequestBody UserDTO userDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Response response = userService.updateUserProfile(email, userDTO);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 
 
 }

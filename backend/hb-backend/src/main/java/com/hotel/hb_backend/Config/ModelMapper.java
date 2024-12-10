@@ -29,6 +29,7 @@ public class ModelMapper {
 
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
+        userDTO.setSurname(user.getSurname());
         userDTO.setEmail(user.getEmail());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setRole(user.getRole());

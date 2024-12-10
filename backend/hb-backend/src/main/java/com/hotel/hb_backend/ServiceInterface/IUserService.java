@@ -2,6 +2,7 @@ package com.hotel.hb_backend.ServiceInterface;
 
 import com.hotel.hb_backend.dto.LoginRequest;
 import com.hotel.hb_backend.dto.Response;
+import com.hotel.hb_backend.dto.UserDTO;
 import com.hotel.hb_backend.entity.User;
 
 public interface IUserService {
@@ -19,4 +20,5 @@ public interface IUserService {
 
     Response getMyInfo(String email);
     Response blockUser(String userId, boolean enable);
+    Response updateUserProfile(String email, UserDTO userDTO);
 }

@@ -24,10 +24,13 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "Поле имя должно быть заполнено")
+    @Column(nullable = true)
     private String name;
 
-    @NotBlank(message = "Номер телефона обязателен")
+    @Column(nullable = true)
+    private String surname;
+
+    @Column(nullable = true)
     private String phoneNumber;
 
     @NotBlank(message = "Пароль обязателен")
@@ -35,7 +38,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
     private boolean isEnabled = true;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
@@ -48,6 +53,7 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return isEnabled;
     }
+
     @Override
     public String getUsername() {
         return email;
@@ -67,5 +73,5 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 }
+

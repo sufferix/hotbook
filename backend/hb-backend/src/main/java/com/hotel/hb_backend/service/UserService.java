@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class UserService implements IUserService {
             response.setToken(token);
             response.setRole(user.getRole());
             response.setExpirationTime("7 дней");
-            response.setMessage("с");
+            response.setMessage("Успешный вход");
 
         } catch (MessException e) {
             response.setStatusCode(404);
@@ -195,6 +196,7 @@ public class UserService implements IUserService {
         }
         return response;
     }
+    @Override
     public Response blockUser(String userId, boolean enable) {
         Response response = new Response();
 
@@ -220,4 +222,40 @@ public class UserService implements IUserService {
 
         return response;
     }
+    @Override
+    public Response updateUserProfile(String email, UserDTO userDTO) {
+        Response response = new Response();
+
+        try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new MessException("Пользователь не найден"));
+
+            if (userDTO.getName() != null) {
+                user.setName(userDTO.getName());
+            }
+            if (userDTO.getSurname() != null) {
+                user.setSurname(userDTO.getSurname());
+            }
+            if (userDTO.getPhoneNumber() != null) {
+                user.setPhoneNumber(userDTO.getPhoneNumber());
+            }
+
+            User updatedUser = userRepository.save(user);
+            UserDTO updatedUserDTO = ModelMapper.mapUserEntityToUserDTO(updatedUser);
+
+            response.setStatusCode(200);
+            response.setMessage("Информация о пользователе успешно обновлена");
+            response.setUser(updatedUserDTO);
+
+        } catch (MessException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при обновлении информации о пользователе: " + e.getMessage());
+        }
+
+        return response;
+    }
+
 }

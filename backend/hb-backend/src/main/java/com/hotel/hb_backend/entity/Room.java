@@ -20,7 +20,6 @@ public class Room {
 
     private BigDecimal roomPrice;
 
-    private String roomPhotoUrl;
 
     private String roomDescription;
 
@@ -31,13 +30,23 @@ public class Room {
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "room_amenities",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id")
+    )
+    private List<Amenity> amenities = new ArrayList<>();
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<RoomPhoto> photos = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Room{" +
                 "id=" + id +
                 ", roomType='" + roomType + '\'' +
                 ", roomPrice=" + roomPrice +
-                ", roomPhotoUrl='" + roomPhotoUrl + '\'' +
                 ", roomDescription='" + roomDescription + '\'' +
                 '}';
     }

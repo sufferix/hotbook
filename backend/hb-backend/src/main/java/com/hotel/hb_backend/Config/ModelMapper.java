@@ -42,7 +42,6 @@ public class ModelMapper {
         roomDTO.setId(room.getId());
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
-        roomDTO.setRoomPhotoUrl(room.getRoomPhotoUrl());
         roomDTO.setRoomDescription(room.getRoomDescription());
         return roomDTO;
     }
@@ -65,7 +64,6 @@ public class ModelMapper {
         roomDTO.setId(room.getId());
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
-        roomDTO.setRoomPhotoUrl(room.getRoomPhotoUrl());
         roomDTO.setRoomDescription(room.getRoomDescription());
 
         if (room.getBookings() != null) {
@@ -93,7 +91,6 @@ public class ModelMapper {
             roomDTO.setId(booking.getRoom().getId());
             roomDTO.setRoomType(booking.getRoom().getRoomType());
             roomDTO.setRoomPrice(booking.getRoom().getRoomPrice());
-            roomDTO.setRoomPhotoUrl(booking.getRoom().getRoomPhotoUrl());
             roomDTO.setRoomDescription(booking.getRoom().getRoomDescription());
             bookingDTO.setRoom(roomDTO);
         }
@@ -134,12 +131,24 @@ public class ModelMapper {
         hotelDTO.setCity(hotel.getCity());
         hotelDTO.setDescription(hotel.getDescription());
         hotelDTO.setStars(hotel.getStars());
+
+        if (hotel.getRooms() != null && !hotel.getRooms().isEmpty()) {
+            List<RoomDTO> roomDTOs = hotel.getRooms().stream()
+                    .map(ModelMapper::mapRoomEntityToRoomDTO)
+                    .collect(Collectors.toList());
+            hotelDTO.setRooms(roomDTOs);
+        }
+
         return hotelDTO;
     }
 
+
     public static List<HotelDTO> mapHotelListEntityToHotelListDTO(List<Hotel> hotels) {
-        return hotels.stream().map(ModelMapper::mapHotelEntityToHotelDTO).collect(Collectors.toList());
+        return hotels.stream()
+                .map(ModelMapper::mapHotelEntityToHotelDTO)
+                .collect(Collectors.toList());
     }
+
     public static ApplicationFormDTO mapApplicationFormToDTO(ApplicationForm form) {
         ApplicationFormDTO dto = new ApplicationFormDTO();
         dto.setId(form.getId());

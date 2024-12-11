@@ -30,6 +30,9 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Room> rooms = new ArrayList<>();
 
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<HotelPhoto> photos = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Hotel{" +

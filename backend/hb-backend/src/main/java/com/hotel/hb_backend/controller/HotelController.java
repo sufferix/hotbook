@@ -19,7 +19,7 @@ public class HotelController {
     private IHotelService hotelService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('HOTELIER')")
     public ResponseEntity<Response> addNewHotel(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "city", required = false) String city,
@@ -49,7 +49,7 @@ public class HotelController {
     }
 
     @PutMapping("/update/{hotelId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('HOTELIER')")
     public ResponseEntity<Response> updateHotel(
             @PathVariable Long hotelId,
             @RequestParam(value = "name", required = false) String name,
@@ -68,7 +68,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/delete/{hotelId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('HOTELIER')")
     public ResponseEntity<Response> deleteHotel(@PathVariable Long hotelId) {
         Response response = hotelService.deleteHotel(hotelId);
         return ResponseEntity.status(response.getStatusCode()).body(response);

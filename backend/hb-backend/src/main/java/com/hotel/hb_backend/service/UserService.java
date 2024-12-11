@@ -37,7 +37,7 @@ public class UserService implements IUserService {
                 user.setRole(Role.USER);
             }
             if (userRepository.existsByEmail(user.getEmail())) {
-                throw new MessException(user.getEmail() + "Уже существует");
+                throw new MessException(user.getEmail() + " уже существует");
             }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             User savedUser = userRepository.save(user);
@@ -182,7 +182,7 @@ public class UserService implements IUserService {
             User user = userRepository.findByEmail(email).orElseThrow(() -> new MessException("Пользователь не найден"));
             UserDTO userDTO = ModelMapper.mapUserEntityToUserDTO(user);
             response.setStatusCode(200);
-            response.setMessage("с");
+            response.setMessage("Получена информация о пользователе");
             response.setUser(userDTO);
 
         } catch (MessException e) {

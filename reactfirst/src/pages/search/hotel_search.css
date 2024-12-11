@@ -8,6 +8,8 @@
 .map-container {
   flex: 1; /* Карта занимает всё доступное пространство слева */
   background-color: #f0f0f0; /* Серый фон, пока карта не загрузится */
+  height: 100%;
+  
 }
 
 .search-container {
@@ -16,7 +18,6 @@
   flex-direction: column;
   padding: 20px;
   background-color: #fff;
-  overflow-y: auto; /* Добавляем прокрутку, если контент выходит за пределы */
 }
 
 .search-filters {

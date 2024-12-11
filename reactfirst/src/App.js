@@ -9,7 +9,7 @@ import ClientDashboard from "./pages/user_acc/client_dashboard";
 import "./App.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const toggleLoginModal = () => setIsModalOpen(!isModalOpen);

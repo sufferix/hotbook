@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import SearchForm from "../../components/search/search_form";
 import Filters from "../../components/search/filters";
 import HotelCard from "../../components/search/hotel_card";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "./hotel_search.css";
 
 const HotelSearchPage = () => {
@@ -17,21 +17,6 @@ const HotelSearchPage = () => {
     fetchHotels();
   }, [filters, city, startDate, endDate, guests]);
 
-  /*const fetchHotels = async () => {
-    try {
-      const response = await fetch("/api/hotels", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ city, startDate, endDate, guests, filters }),
-      });
-      const data = await response.json();
-      setHotels(data);
-    } catch (error) {
-      console.error("Ошибка загрузки отелей", error);
-    }
-  };*/
   const fetchHotels = async () => {
     // Тестовые данные
     const data = [
@@ -46,7 +31,7 @@ const HotelSearchPage = () => {
         image: null,
       },
     ];
-    console.log("Тестовые данные:", data); // Лог для проверки
+    console.log("Тестовые данные:", data);
     setHotels(data);
   };
 
@@ -60,29 +45,32 @@ const HotelSearchPage = () => {
 
   return (
     <div className="hotel-search-page">
-    <div className="map-container">
-      <MapContainer center={[55.751244, 37.618423]} zoom={10} style={{ height: "400px", width: "100%" }}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-      </MapContainer>
-
-        {/* Правая часть с формой и результатами */}
-        <div className="search-section">
-          <SearchForm
-            city={city}
-            setCity={setCity}
-            startDate={startDate}
-            setStartDate={setStartDate}
-            endDate={endDate}
-            setEndDate={setEndDate}
-            guests={guests}
-            setGuests={setGuests}
+      {/* Левая часть: карта */}
+      <div className="map-container">
+        <MapContainer center={[55.751244, 37.618423]} zoom={10} style={{ height: "100%", width: "100%" }}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
+        </MapContainer>
+      </div>
 
-          <Filters filters={filters} handleFilterClick={handleFilterClick} />
+      {/* Правая часть: форма поиска и карточки */}
+      <div className="search-section">
+        <SearchForm
+          city={city}
+          setCity={setCity}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          guests={guests}
+          setGuests={setGuests}
+        />
 
+        <Filters filters={filters} handleFilterClick={handleFilterClick} />
+
+        <div className="hotel-results">
           <HotelCard hotels={hotels} />
         </div>
       </div>
@@ -91,3 +79,4 @@ const HotelSearchPage = () => {
 };
 
 export default HotelSearchPage;
+

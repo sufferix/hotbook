@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
@@ -20,4 +21,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Query("SELECT r FROM Room r WHERE r.id NOT IN (SELECT b.room.id FROM Booking b)")
     List<Room> getAllAvailableRooms();
+
+    List<Room> findByHotelId(Long hotelId);
+    Optional<Room> findByIdAndHotelId(Long roomId, Long hotelId);
 }

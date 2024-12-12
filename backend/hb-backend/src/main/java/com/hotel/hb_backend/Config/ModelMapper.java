@@ -2,27 +2,10 @@ package com.hotel.hb_backend.Config;
 
 import com.hotel.hb_backend.dto.*;
 import com.hotel.hb_backend.entity.*;
-
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ModelMapper {
-
-    private static final String ALPHANUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private static final SecureRandom secureRandom = new SecureRandom();
-
-
-    public static String generateRandomConfirmationCode(int length) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int randomIndex = secureRandom.nextInt(ALPHANUMERIC_STRING.length());
-            char randomChar = ALPHANUMERIC_STRING.charAt(randomIndex);
-            stringBuilder.append(randomChar);
-        }
-        return stringBuilder.toString();
-    }
-
 
     public static UserDTO mapUserEntityToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
@@ -54,9 +37,10 @@ public class ModelMapper {
         bookingDTO.setNumOfAdults(booking.getNumOfAdults());
         bookingDTO.setNumOfChildren(booking.getNumOfChildren());
         bookingDTO.setTotalNumOfGuest(booking.getTotalNumOfGuest());
-        bookingDTO.setBookingConfirmationCode(booking.getBookingConfirmationCode());
+        bookingDTO.setTotalCost(booking.getTotalCost());
         return bookingDTO;
     }
+
 
     public static RoomDTO mapRoomEntityToRoomDTOPlusBookings(Room room) {
         RoomDTO roomDTO = new RoomDTO();
@@ -81,7 +65,6 @@ public class ModelMapper {
         bookingDTO.setNumOfAdults(booking.getNumOfAdults());
         bookingDTO.setNumOfChildren(booking.getNumOfChildren());
         bookingDTO.setTotalNumOfGuest(booking.getTotalNumOfGuest());
-        bookingDTO.setBookingConfirmationCode(booking.getBookingConfirmationCode());
         if (mapUser) {
             bookingDTO.setUser(ModelMapper.mapUserEntityToUserDTO(booking.getUser()));
         }

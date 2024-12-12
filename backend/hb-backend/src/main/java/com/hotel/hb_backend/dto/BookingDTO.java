@@ -4,6 +4,7 @@ package com.hotel.hb_backend.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -16,7 +17,8 @@ public class BookingDTO {
     private int numOfAdults;
     private int numOfChildren;
     private int totalNumOfGuest;
-    private String bookingConfirmationCode;
+    private BigDecimal totalCost;
     private UserDTO user;
     private RoomDTO room;
 }
+

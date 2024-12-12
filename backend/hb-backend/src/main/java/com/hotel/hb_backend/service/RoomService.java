@@ -1,7 +1,9 @@
 package com.hotel.hb_backend.service;
 
+import com.hotel.hb_backend.Repository.HotelRepository;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.RoomDTO;
+import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.ServiceInterface.IRoomService;
@@ -22,158 +24,110 @@ public class RoomService implements IRoomService {
 
     @Autowired
     private RoomRepository roomRepository;
+
     @Autowired
-    private BookingRepository bookingRepository;
+    private HotelRepository hotelRepository;
 
     @Override
-    public Response addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice, String description) {
+    public Response getRoomsByHotelId(Long hotelId) {
         Response response = new Response();
-
         try {
+            List<Room> rooms = roomRepository.findByHotelId(hotelId);
+            List<RoomDTO> roomDTOs = ModelMapper.mapRoomListEntityToRoomListDTO(rooms);
+
+            response.setStatusCode(200);
+            response.setMessage("Список номеров успешно получен");
+            response.setRoomList(roomDTOs);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при получении списка номеров: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response addRoomToHotel(Long hotelId, RoomDTO roomDTO, String email) {
+        Response response = new Response();
+        try {
+            Hotel hotel = hotelRepository.findById(hotelId)
+                    .orElseThrow(() -> new MessException("Отель не найден"));
+
+            if (!hotel.getUser().getEmail().equals(email)) {
+                throw new MessException("Вы не являетесь владельцем этого отеля");
+            }
+
             Room room = new Room();
-            room.setRoomType(roomType);
-            room.setRoomPrice(roomPrice);
-            room.setRoomDescription(description);
-            Room savedRoom = roomRepository.save(room);
-            RoomDTO roomDTO = ModelMapper.mapRoomEntityToRoomDTO(savedRoom);
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setRoom(roomDTO);
+            room.setRoomType(roomDTO.getRoomType());
+            room.setRoomPrice(roomDTO.getRoomPrice());
+            room.setRoomDescription(roomDTO.getRoomDescription());
+            room.setHotel(hotel);
 
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
-        }
-        return response;
-    }
+            roomRepository.save(room);
 
-    @Override
-    public List<String> getAllRoomTypes() {
-        return roomRepository.findDistinctRoomTypes();
-    }
-
-    @Override
-    public Response getAllRooms() {
-        Response response = new Response();
-
-        try {
-            List<Room> roomList = roomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-            List<RoomDTO> roomDTOList = ModelMapper.mapRoomListEntityToRoomListDTO(roomList);
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setRoomList(roomDTOList);
-
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response deleteRoom(Long roomId) {
-        Response response = new Response();
-
-        try {
-            roomRepository.findById(roomId).orElseThrow(() -> new MessException("Комната не найдена"));
-            roomRepository.deleteById(roomId);
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-
+            response.setStatusCode(201);
+            response.setMessage("Номер успешно добавлен");
         } catch (MessException e) {
-            response.setStatusCode(404);
+            response.setStatusCode(403);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
+            response.setMessage("Ошибка при добавлении номера: " + e.getMessage());
         }
         return response;
     }
 
     @Override
-    public Response updateRoom(Long roomId, String description, String roomType, BigDecimal roomPrice, MultipartFile photo) {
+    public Response updateRoom(Long hotelId, Long roomId, RoomDTO roomDTO, String email) {
         Response response = new Response();
-
         try {
-            Room room = roomRepository.findById(roomId).orElseThrow(() -> new MessException("Комната не найдена"));
-            if (roomType != null) room.setRoomType(roomType);
-            if (roomPrice != null) room.setRoomPrice(roomPrice);
-            if (description != null) room.setRoomDescription(description);
+            Room room = roomRepository.findByIdAndHotelId(roomId, hotelId)
+                    .orElseThrow(() -> new MessException("Номер не найден"));
 
-            Room updatedRoom = roomRepository.save(room);
-            RoomDTO roomDTO = ModelMapper.mapRoomEntityToRoomDTO(updatedRoom);
+            if (!room.getHotel().getUser().getEmail().equals(email)) {
+                throw new MessException("Вы не являетесь владельцем этого номера");
+            }
+
+            room.setRoomType(roomDTO.getRoomType());
+            room.setRoomPrice(roomDTO.getRoomPrice());
+            room.setRoomDescription(roomDTO.getRoomDescription());
+
+            roomRepository.save(room);
 
             response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setRoom(roomDTO);
-
+            response.setMessage("Номер успешно обновлен");
         } catch (MessException e) {
-            response.setStatusCode(404);
+            response.setStatusCode(403);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
+            response.setMessage("Ошибка при обновлении номера: " + e.getMessage());
         }
         return response;
     }
 
     @Override
-    public Response getRoomById(Long roomId) {
+    public Response deleteRoom(Long hotelId, Long roomId, String email) {
         Response response = new Response();
-
         try {
-            Room room = roomRepository.findById(roomId).orElseThrow(() -> new MessException("Комната не найдена"));
-            RoomDTO roomDTO = ModelMapper.mapRoomEntityToRoomDTOPlusBookings(room);
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setRoom(roomDTO);
+            Room room = roomRepository.findByIdAndHotelId(roomId, hotelId)
+                    .orElseThrow(() -> new MessException("Номер не найден"));
 
+            if (!room.getHotel().getUser().getEmail().equals(email)) {
+                throw new MessException("Вы не являетесь владельцем этого номера");
+            }
+
+            roomRepository.delete(room);
+
+            response.setStatusCode(200);
+            response.setMessage("Номер успешно удален");
         } catch (MessException e) {
-            response.setStatusCode(404);
+            response.setStatusCode(403);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response getAvailableRoomsByDataAndType(LocalDate checkInDate, LocalDate checkOutDate, String roomType) {
-        Response response = new Response();
-
-        try {
-            List<Room> availableRooms = roomRepository.findAvailableRoomsByDatesAndTypes(checkInDate, checkOutDate, roomType);
-            List<RoomDTO> roomDTOList = ModelMapper.mapRoomListEntityToRoomListDTO(availableRooms);
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setRoomList(roomDTOList);
-
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
-        }
-        return response;
-    }
-
-    @Override
-    public Response getAllAvailableRooms() {
-        Response response = new Response();
-
-        try {
-            List<Room> roomList = roomRepository.getAllAvailableRooms();
-            List<RoomDTO> roomDTOList = ModelMapper.mapRoomListEntityToRoomListDTO(roomList);
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setRoomList(roomDTOList);
-
-        } catch (MessException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при сохранении комнаты: " + e.getMessage());
+            response.setMessage("Ошибка при удалении номера: " + e.getMessage());
         }
         return response;
     }
 }
+

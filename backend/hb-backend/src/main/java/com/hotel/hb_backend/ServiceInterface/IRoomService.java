@@ -2,26 +2,19 @@ package com.hotel.hb_backend.ServiceInterface;
 
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.RoomDTO;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface IRoomService {
+    Response getRoomsByHotelId(Long hotelId);
 
-    Response addNewRoom(MultipartFile photo, String roomType, BigDecimal roomPrice, String description);
-    List<String> getAllRoomTypes();
+    Response addRoomToHotel(Long hotelId, RoomDTO roomDTO, String email);
 
-    Response getAllRooms();
+    Response updateRoom(Long hotelId, Long roomId, RoomDTO roomDTO, String email);
 
-    Response deleteRoom(Long roomId);
-
-    Response updateRoom(Long roomId, String description, String roomType, BigDecimal roomPrice, MultipartFile photo);
-
-    Response getRoomById(Long roomId);
-
-    Response getAvailableRoomsByDataAndType(LocalDate checkInDate, LocalDate checkOutDate, String roomType);
-
-    Response getAllAvailableRooms();
+    Response deleteRoom(Long hotelId, Long roomId, String email);
 }
+
+

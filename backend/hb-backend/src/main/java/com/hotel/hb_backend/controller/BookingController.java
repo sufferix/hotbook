@@ -7,47 +7,54 @@ import com.hotel.hb_backend.ServiceInterface.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/bookings")
-
 public class BookingController {
 
     @Autowired
     private IBookingService bookingService;
 
-    @PostMapping("/book-room/{roomId}/{userId}")
-    @PreAuthorize("hasAuthority('HOTELIER') or hasAuthority('USER')")
-    public ResponseEntity<Response> saveBookings(@PathVariable Long roomId,
-                                                 @PathVariable Long userId,
-                                                 @RequestBody Booking bookingRequest) {
+    // Создание бронирования
+    @PostMapping("/hotels/{hotelId}/rooms/{roomId}/book")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Response> createBooking(
+            @PathVariable Long hotelId,
+            @PathVariable Long roomId,
+            @RequestBody Booking bookingRequest
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
-
-        Response response = bookingService.saveBooking(roomId, userId, bookingRequest);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-
-    }
-
-    @GetMapping("/all")
-    @PreAuthorize("hasAuthority('HOTELIER')")
-    public ResponseEntity<Response> getAllBookings() {
-        Response response = bookingService.getAllBookings();
+        Response response = bookingService.createBooking(hotelId, roomId, email, bookingRequest);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/get-by-confirmation-code/{confirmationCode}")
-    public ResponseEntity<Response> getBookingByConfirmationCode(@PathVariable String confirmationCode) {
-        Response response = bookingService.findBookingByConfirmationCode(confirmationCode);
+    // Получение всех бронирований текущего пользователя
+    @GetMapping
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Response> getMyBookings() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Response response = bookingService.getMyBookings(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @DeleteMapping("/cancel/{bookingId}")
-    @PreAuthorize("hasAuthority('HOTELIER') or hasAuthority('USER')")
+    // Отмена бронирования текущего пользователя
+    @DeleteMapping("/{bookingId}/cancel")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Response> cancelBooking(@PathVariable Long bookingId) {
-        Response response = bookingService.cancelBooking(bookingId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Response response = bookingService.cancelBooking(bookingId, email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-
-
 }
+
+
+

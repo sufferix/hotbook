@@ -12,13 +12,16 @@ public interface IUserService {
 
     Response getAllUsers();
 
-    Response getUserBookingHistory(String userId);
+    Response getUserById(Long userId);
 
-    Response deleteUser(String userId);
-
-    Response getUserById(String userId);
+    Response deleteUser(Long userId);
 
     Response getMyInfo(String email);
-    Response blockUser(String userId, boolean enable);
+
+    Response getUserBookingHistory(String email);
+
+    Response blockUser(Long userId, boolean enable);
+
     Response updateUserProfile(String email, UserDTO userDTO);
+    Response getHotelsOfLoggedInHotelier(String email);
 }

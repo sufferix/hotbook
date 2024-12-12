@@ -1,8 +1,10 @@
 package com.hotel.hb_backend.service;
 
+import com.hotel.hb_backend.Repository.UserRepository;
 import com.hotel.hb_backend.dto.HotelDTO;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.entity.Hotel;
+import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.Repository.HotelRepository;
 import com.hotel.hb_backend.ServiceInterface.IHotelService;
@@ -19,7 +21,8 @@ public class HotelService implements IHotelService {
 
     @Autowired
     private HotelRepository hotelRepository;
-
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public Response getAllHotels() {
         Response response = new Response();
@@ -57,19 +60,23 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Response addHotel(String name, String city, String description, int stars) {
+    public Response addHotel(HotelDTO hotelDTO, String email) {
         Response response = new Response();
         try {
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new MessException("Пользователь не найден"));
+
             Hotel hotel = new Hotel();
-            hotel.setName(name);
-            hotel.setCity(city);
-            hotel.setDescription(description);
-            hotel.setStars(stars);
-            Hotel savedHotel = hotelRepository.save(hotel);
-            HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(savedHotel);
-            response.setStatusCode(200);
+            hotel.setName(hotelDTO.getName());
+            hotel.setCity(hotelDTO.getCity());
+            hotel.setDescription(hotelDTO.getDescription());
+            hotel.setStars(hotelDTO.getStars());
+            hotel.setUser(user); // Привязка к текущему владельцу
+
+            hotelRepository.save(hotel);
+
+            response.setStatusCode(201);
             response.setMessage("Отель успешно добавлен");
-            response.setHotel(hotelDTO);
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Ошибка при добавлении отеля: " + e.getMessage());
@@ -77,23 +84,29 @@ public class HotelService implements IHotelService {
         return response;
     }
 
+
     @Override
-    public Response updateHotel(Long hotelId, String name, String city, String description, int stars) {
+    public Response updateHotel(Long hotelId, HotelDTO hotelDTO, String email) {
         Response response = new Response();
         try {
             Hotel hotel = hotelRepository.findById(hotelId)
-                    .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
-            hotel.setName(name);
-            hotel.setCity(city);
-            hotel.setDescription(description);
-            hotel.setStars(stars);
-            Hotel updatedHotel = hotelRepository.save(hotel);
-            HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(updatedHotel);
+                    .orElseThrow(() -> new MessException("Отель не найден"));
+
+            if (!hotel.getUser().getEmail().equals(email)) {
+                throw new MessException("Вы не можете редактировать этот отель");
+            }
+
+            hotel.setName(hotelDTO.getName());
+            hotel.setCity(hotelDTO.getCity());
+            hotel.setDescription(hotelDTO.getDescription());
+            hotel.setStars(hotelDTO.getStars());
+
+            hotelRepository.save(hotel);
+
             response.setStatusCode(200);
-            response.setMessage("Информация об отеле успешно обновлена");
-            response.setHotel(hotelDTO);
+            response.setMessage("Отель успешно обновлен");
         } catch (MessException e) {
-            response.setStatusCode(404);
+            response.setStatusCode(403);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
@@ -103,16 +116,22 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Response deleteHotel(Long hotelId) {
+    public Response deleteHotel(Long hotelId, String email) {
         Response response = new Response();
         try {
             Hotel hotel = hotelRepository.findById(hotelId)
-                    .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
+                    .orElseThrow(() -> new MessException("Отель не найден"));
+
+            if (!hotel.getUser().getEmail().equals(email)) {
+                throw new MessException("Вы не можете удалить этот отель");
+            }
+
             hotelRepository.delete(hotel);
+
             response.setStatusCode(200);
             response.setMessage("Отель успешно удален");
         } catch (MessException e) {
-            response.setStatusCode(404);
+            response.setStatusCode(403);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
@@ -121,22 +140,5 @@ public class HotelService implements IHotelService {
         return response;
     }
 
-    public Response findHotelsWithAvailableRoomsByFilters(LocalDate checkInDate, LocalDate checkOutDate, String roomType, String city, Integer  stars)  {
-        Response response = new Response();
-        try {
-            Specification<Hotel> specification = HotelSpecification.withFilters(city, stars != null ? stars : null, roomType, checkInDate, checkOutDate);
-            List<Hotel> hotels = hotelRepository.findAll(specification);
-            List<HotelDTO> hotelDTOList = ModelMapper.mapHotelListEntityToHotelListDTO(hotels);
-
-            response.setStatusCode(200);
-            response.setMessage("Успешно");
-            response.setHotelList(hotelDTOList);
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при фильтрации отелей: " + e.getMessage());
-        }
-        return response;
-    }
 }
-
 

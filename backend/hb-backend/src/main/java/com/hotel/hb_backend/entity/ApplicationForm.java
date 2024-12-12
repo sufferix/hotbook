@@ -2,8 +2,7 @@ package com.hotel.hb_backend.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -22,7 +21,7 @@ public class ApplicationForm {
     private User user;
 
     @NotNull
-    private String fullName; // ФИО
+    private String fullName;
 
     @NotNull
     private String email;

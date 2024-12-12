@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -32,8 +33,6 @@ public class Booking {
 
     private int totalNumOfGuest;
 
-    private String bookingConfirmationCode;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -42,8 +41,19 @@ public class Booking {
     @JoinColumn(name = "room_id")
     private Room room;
 
+    private BigDecimal totalCost;
+
     public void calculateTotalNumberOfGuest() {
         this.totalNumOfGuest = this.numOfAdults + this.numOfChildren;
+    }
+
+    public void calculateTotalCost() {
+        if (this.checkInDate != null && this.checkOutDate != null && this.room != null) {
+            long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(this.checkInDate, this.checkOutDate);
+            if (daysBetween > 0) {
+                this.totalCost = room.getRoomPrice().multiply(BigDecimal.valueOf(daysBetween));
+            }
+        }
     }
 
     public void setNumOfAdults(int numOfAdults) {
@@ -56,6 +66,12 @@ public class Booking {
         calculateTotalNumberOfGuest();
     }
 
+    @PrePersist
+    @PreUpdate
+    public void onPrePersistOrUpdate() {
+        calculateTotalCost();
+    }
+
     @Override
     public String toString() {
         return "Booking{" +
@@ -65,7 +81,8 @@ public class Booking {
                 ", numOfAdults=" + numOfAdults +
                 ", numOfChildren=" + numOfChildren +
                 ", totalNumOfGuest=" + totalNumOfGuest +
-                ", bookingConfirmationCode='" + bookingConfirmationCode + '\'' +
+                ", totalCost=" + totalCost +
                 '}';
     }
 }
+

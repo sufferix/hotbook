@@ -33,6 +33,10 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<HotelPhoto> photos = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Override
     public String toString() {
         return "Hotel{" +
@@ -44,3 +48,4 @@ public class Hotel {
                 '}';
     }
 }
+

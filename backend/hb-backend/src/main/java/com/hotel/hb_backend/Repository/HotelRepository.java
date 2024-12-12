@@ -2,6 +2,7 @@ package com.hotel.hb_backend.Repository;
 
 import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Room;
+import com.hotel.hb_backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,5 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>, JpaSpecific
             @Param("city") String city,
             @Param("roomType") String roomType,
             @Param("stars") int stars);
+    List<Hotel> findByUser(User user);
 }

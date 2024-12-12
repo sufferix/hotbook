@@ -15,59 +15,79 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-
     @Autowired
     private IUserService userService;
 
-    @GetMapping("/all")
+    // Получение всех пользователей (только для администратора)
+    @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Response> getAllUsers() {
         Response response = userService.getAllUsers();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/get-by-id/{userId}")
-    public ResponseEntity<Response> getUserById(@PathVariable("userId") String userId) {
+    // Получение пользователя по ID
+    @GetMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<Response> getUserById(@PathVariable("userId") Long userId) {
         Response response = userService.getUserById(userId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @DeleteMapping("/delete/{userId}")
+    // Удаление пользователя (только для администратора)
+    @DeleteMapping("/{userId}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> deleteUSer(@PathVariable("userId") String userId) {
+    public ResponseEntity<Response> deleteUser(@PathVariable("userId") Long userId) {
         Response response = userService.deleteUser(userId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/get-logged-in-profile-info")
+    // Получение информации о текущем пользователе
+    @GetMapping("/profile")
     public ResponseEntity<Response> getLoggedInUserProfile() {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Response response = userService.getMyInfo(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @GetMapping("/get-user-bookings/{userId}")
-    public ResponseEntity<Response> getUserBookingHistory(@PathVariable("userId") String userId) {
-        Response response = userService.getUserBookingHistory(userId);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-    @PutMapping("/block/{userId}")
+
+    // Блокировка пользователя (только для администратора)
+    @PutMapping("/{userId}/block")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response> blockUser(@PathVariable("userId") String userId, @RequestParam boolean enable) {
+    public ResponseEntity<Response> blockUser(@PathVariable("userId") Long userId, @RequestParam boolean enable) {
         Response response = userService.blockUser(userId, enable);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
-    @PutMapping("/update-profile")
+
+    // Обновление профиля текущего пользователя
+    @PutMapping("/profile")
     public ResponseEntity<Response> updateUserProfile(@RequestBody UserDTO userDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-
         Response response = userService.updateUserProfile(email, userDTO);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
+    // Получение всех отелей текущего пользователя с ролью HOTELIER
+    @GetMapping("/my-hotels")
+    @PreAuthorize("hasAuthority('HOTELIER')")
+    public ResponseEntity<Response> getHotelsOfLoggedInHotelier() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        Response response = userService.getHotelsOfLoggedInHotelier(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 
+    @GetMapping("/profile/bookings")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<Response> getMyBookingHistory() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Response response = userService.getUserBookingHistory(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 
 }
+

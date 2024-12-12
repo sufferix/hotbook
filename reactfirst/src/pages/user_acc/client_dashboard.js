@@ -1,60 +1,83 @@
-import React, { useState } from "react";
+import React from "react";
+import { useProfile } from "../../hooks/use_profile";
+import { useState } from "react";
 import ProfileEditForm from "../../components/account/profile_edit_form";
 import BookingInfo from "../../components/account/booking_info";
 import NoBooking from "../../components/account/no_booking";
+import LogoutButton from "../../components/account/logout_button";
+import OwnershipApplicationModal from "../../components/ownership/ownership_modal";
 import "./client_dashboard.css";
 
 function ClientDashboard() {
-  const [user, setUser] = useState({
+  const { profile, editing, startEditing, saveProfile } = useProfile({
     name: "",
     surname: "",
     email: "suffextra@gmail.com",
     phone: "",
   });
 
-  const [editing, setEditing] = useState(false); // Состояние редактирования профиля
-  const [hasBooking, setHasBooking] = useState(true); // Состояние наличия бронирования
+  const [hasBooking, setHasBooking] = React.useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Состояние открытия модального окна
 
-  const handleSaveProfile = (updatedUser) => {
-    setUser(updatedUser); // Сохраняем обновленные данные
-    setEditing(false); // Закрываем форму редактирования
+  const handleLogout = () => {
+    console.log("Пользователь вышел из аккаунта");
   };
-
-  if (editing) {
-    // Если пользователь редактирует профиль, отображаем только форму редактирования
-    return (
-      <div className="client-dashboard">
-        <header className="dashboard-header">
-          <h1>Личный кабинет</h1>
-        </header>
-        <ProfileEditForm user={user} onSave={handleSaveProfile} />
-      </div>
-    );
-  }
 
   return (
     <div className="client-dashboard">
       <header className="dashboard-header">
         <h1>Личный кабинет</h1>
       </header>
+
       <div className="profile-section">
         <div className="avatar-placeholder"></div>
         <div>
-          <p className="user-name">{user.name} {user.surname}</p>
-          <p className="user-email">{user.email}</p>
-          <button
-            className="edit-button"
-            onClick={() => setEditing(true)}
-          >
-            редактировать профиль
-          </button>
+          {!editing ? (
+            <>
+              <p className="user-name">
+                {profile.name} {profile.surname}
+              </p>
+              <p className="user-email">{profile.email}</p>
+              <button className="edit-button" onClick={startEditing}>
+                Редактировать профиль
+              </button>
+              <LogoutButton onLogout={handleLogout} />
+            </>
+          ) : (
+            <ProfileEditForm initialData={profile} onSave={saveProfile} />
+          )}
         </div>
       </div>
-      <h2>Информация о бронировании</h2>
-      {hasBooking ? <BookingInfo /> : <NoBooking />}
+
+      {!editing && (
+        <>
+          <h2>Информация о бронировании</h2>
+          {hasBooking ? <BookingInfo /> : <NoBooking />}
+        </>
+      )}
+            <footer className="dashboard-footer">
+        <a
+          href="#"
+          className="ownership-link"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsModalOpen(true);
+          }}
+        >
+          хочешь стать владельцем отеля?
+        </a>
+      </footer>
+      {isModalOpen && (
+        <OwnershipApplicationModal
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
 
 export default ClientDashboard;
+
+
+
 

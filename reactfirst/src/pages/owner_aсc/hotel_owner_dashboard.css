@@ -1,4 +1,4 @@
-.client-dashboard {
+.hotel-owner-dashboard {
     padding: 20px;
     font-family: 'Open Sans', sans-serif;
     max-width: 1200px; /* Ограничиваем ширину страницы */
@@ -11,7 +11,7 @@
     font-size: 3rem;
     color: rgb(38, 70, 83);
   }
-
+  
   h2 {
     text-align: left;
     font-size: 2rem;
@@ -32,20 +32,20 @@
     background-color: #ddd;
   }
   
-  .user-name {
+  .owner-name {
     font-size: 2rem;
     font-weight: normal;
     color: #344e61;
     margin: 0 0 5px 0;
   }
   
-  .user-email {
-    font-size: 1.2rem;
+  .owner-role {
+    font-size: 1rem;
     color: #666;
     margin: 0 0 10px 0;
   }
   
-  .edit-button {
+  .edit-profile-button {
     background-color: #344e61;
     color: white;
     padding: 10px 20px;
@@ -54,97 +54,67 @@
     cursor: pointer;
   }
   
-  .edit-button:hover {
+  .edit-profile-button:hover {
     background-color: #2a3c4f;
   }
   
-  
-  .edit-button, .save-button, .cancel-button, .book-now-button {
-    background-color: #344e61;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .hotel-section {
+    margin-top: 30px;
   }
   
-  .booking-card {
+  .hotel-card {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 15px;
-    gap: 15px;
-    max-width: 800px;
-    margin: 20px auto;
+    background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
   .hotel-image-placeholder {
-    width: 100px;
-    height: 80px;
+    width: 150px;
+    height: 100px;
     background-color: #ddd;
     border-radius: 5px;
   }
   
-  .booking-details {
+  .hotel-info {
     flex: 1;
-    margin-left: 15px;
   }
   
   .hotel-name {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: bold;
     margin: 0 0 5px 0;
   }
   
-  .room-category {
+  .hotel-address {
     font-size: 1rem;
     color: #666;
+    margin: 0 0 10px 0;
   }
   
-  .booking-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    text-align: right;
+  .hotel-stars {
+    font-size: 1.2rem;
+    color: gold;
   }
   
-  .date-info, .guests-info {
-    font-size: 1rem;
-    background-color: #f5f5f5;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: not-allowed; /* Показывает, что информация неизменяемая */
-    color: #999;
-    border: 1px solid #e0e0e0;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .date-info span, .guests-info span {
-    margin-right: 5px;
-  }
-  
-  .cancel-button {
+  .edit-hotel-button {
     background-color: #344e61;
     color: white;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1rem;
     cursor: pointer;
   }
   
-  .cancel-button:hover {
+  .edit-hotel-button:hover {
     background-color: #2a3c4f;
   }
   
-  
-  .no-booking {
-    text-align: center;
-  }
-  
+  /* Форма редактирования */
   .profile-edit-form {
     display: flex;
     flex-direction: column;
@@ -168,7 +138,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Центрируем элементы внутри формы */
+    align-items: center;
   }
   
   .form-row {
@@ -185,11 +155,6 @@
     font-size: 1rem;
   }
   
-  input:read-only {
-    background-color: #f9f9f9;
-    cursor: not-allowed;
-  }
-  
   .save-button {
     background-color: #344e61;
     color: white;
@@ -204,40 +169,5 @@
   .save-button:hover {
     background-color: #2a3c4f;
   }
+
   
-.edit-button,
-.edit-profile-button,
-.logout-button {
-  display: block; /* Кнопки будут на отдельных строках */
-  width: 100%; /* Кнопки занимают всю ширину контейнера */
-  margin-top: 10px; /* Отступ между кнопками */
-  padding: 10px 20px;
-  background-color: #344e61;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  text-align: center;
-}
-
-.logout-button {
-  background-color: #e63946;
-}
-
-.logout-button:hover {
-  background-color: #d62839;
-}
-
-.ownership-link {
-  color: gray; /* Цвет текста - серый */
-  font-style: italic; /* Курсивное начертание */
-  text-decoration: none; /* Убирает подчеркивание */
-  cursor: pointer; /* Указывает, что это кликабельная ссылка */
-}
-
-.ownership-link:hover {
-  color: darkgray; /* Изменение цвета при наведении (опционально) */
-  text-decoration: underline; /* Подчеркивание при наведении (опционально) */
-}
-

@@ -1,18 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./AuthModal.css";
 
-// Настройка базового URL для удалённого сервера
-axios.defaults.baseURL = "https://db87-2a09-bac5-51e2-632-00-9e-28.ngrok-free.app";
+axios.defaults.baseURL = "https://6deb-2a09-bac5-51e6-632-00-9e-27.ngrok-free.app";
 
 function AuthModal({ onClose }) {
-  const [isLogin, setIsLogin] = useState(true); // Состояние для переключения между входом и регистрацией
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate(); // Хук для перенаправления
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
@@ -21,15 +18,16 @@ function AuthModal({ onClose }) {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("/users/login", { email, password });
+      const response = await axios.post("/auth/login", { email, password });
       const data = response.data;
 
       if (data.statusCode === 200) {
         localStorage.setItem("token", data.token);
+        alert("Успешный вход!");
         onClose();
-        navigate("/dashboard/client");
+        window.location.href = "/dashboard/client";
       } else {
-        setErrorMessage(data.message || "Ошибка. Попробуйте снова.");
+        setErrorMessage(data.message || "Произошла ошибка, попробуйте снова.");
       }
     } catch (error) {
       setErrorMessage(
@@ -45,14 +43,15 @@ function AuthModal({ onClose }) {
     }
 
     try {
-      const response = await axios.post("/users/register", { email, password });
+      const response = await axios.post("/auth/register", { email, password });
       const data = response.data;
 
       if (data.statusCode === 200) {
+        alert("Регистрация успешна!");
         onClose();
-        navigate("/dashboard/client");
+        window.location.href = "/dashboard/client";
       } else {
-        setErrorMessage(data.message || "Ошибка. Попробуйте снова.");
+        setErrorMessage(data.message || "Произошла ошибка, попробуйте снова.");
       }
     } catch (error) {
       setErrorMessage(
@@ -126,4 +125,3 @@ function AuthModal({ onClose }) {
 }
 
 export default AuthModal;
-

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from "react-router-dom";
 import Header from "./components/header/header";
-import AuthModal from "./components/auth/AuthModal";
+import AuthModal from "./components/auth/AuthModal_no_server";
 import Home from "./pages/homepage/home";
 import HotelSearchPage from "./pages/search/hotel_search";
 import HotelInfoPage from "./pages/hotel_page/hotel_page";
 import ClientDashboard from "./pages/user_acc/client_dashboard";
+import HotelOwnerDashboard from "./pages/owner_aсc/hotel_owner_dashboard";
+import AdminDashboard from "./pages/admin_acc/admin_dashboard";
 import "./App.css";
 
 function App() {

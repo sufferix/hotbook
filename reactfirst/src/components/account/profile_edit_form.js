@@ -1,60 +1,67 @@
 import React, { useState } from "react";
 
-function ProfileEditForm({ user, onSave }) {
-  const [formData, setFormData] = useState(user);
+const ProfileEditForm = ({ initialData, onSave }) => {
+  const [profile, setProfile] = useState(initialData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setProfile({ ...profile, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
+  const handleSave = () => {
+    onSave(profile);
   };
 
   return (
     <div className="profile-edit-form">
       <h2>Редактирование профиля</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => e.preventDefault()}>
         <div className="form-row">
           <input
             type="text"
             name="name"
             placeholder="Имя"
-            value={formData.name}
+            value={profile.name}
             onChange={handleChange}
+            required
           />
+        </div>
+        <div className="form-row">
           <input
             type="text"
             name="surname"
             placeholder="Фамилия"
-            value={formData.surname}
+            value={profile.surname}
             onChange={handleChange}
+            required
           />
         </div>
         <div className="form-row">
           <input
             type="email"
             name="email"
-            placeholder="E-mail"
-            value={formData.email}
+            placeholder="Электронная почта"
+            value={profile.email}
+            onChange={handleChange}
             readOnly
           />
+        </div>
+        <div className="form-row">
           <input
-            type="tel"
+            type="text"
             name="phone"
             placeholder="Телефон"
-            value={formData.phone}
+            value={profile.phone || ""}
             onChange={handleChange}
           />
         </div>
-        <button type="submit" className="save-button">
+        <button type="button" className="save-button" onClick={handleSave}>
           Сохранить
         </button>
       </form>
     </div>
   );
-}
+};
 
 export default ProfileEditForm;
+

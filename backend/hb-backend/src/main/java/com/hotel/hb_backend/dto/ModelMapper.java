@@ -113,6 +113,18 @@ public class ModelMapper {
     public static List<ReviewDTO> mapReviewListToDTO(List<Review> reviews) {
         return reviews.stream().map(ModelMapper::mapReviewToDTO).collect(Collectors.toList());
     }
+    public static AmenityDTO mapAmenityEntityToDTO(Amenity amenity) {
+        AmenityDTO dto = new AmenityDTO();
+        dto.setId(amenity.getId());
+        dto.setName(amenity.getName());
+        return dto;
+    }
+
+    public static List<AmenityDTO> mapAmenityListToDTO(List<Amenity> amenities) {
+        return amenities.stream()
+                .map(ModelMapper::mapAmenityEntityToDTO)
+                .collect(Collectors.toList());
+    }
 
 }
 

@@ -1,8 +1,10 @@
 package com.hotel.hb_backend.service;
 
+import com.hotel.hb_backend.Repository.AmenityRepository;
 import com.hotel.hb_backend.Repository.HotelRepository;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.RoomDTO;
+import com.hotel.hb_backend.entity.Amenity;
 import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.exception.MessException;
@@ -12,6 +14,7 @@ import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,6 +25,8 @@ public class RoomService implements IRoomService {
 
     @Autowired
     private HotelRepository hotelRepository;
+    @Autowired
+    private AmenityRepository amenityRepository;
 
     @Override
     public Response getRoomsByHotelId(Long hotelId) {
@@ -51,10 +56,12 @@ public class RoomService implements IRoomService {
                 throw new MessException("Вы не являетесь владельцем этого отеля");
             }
 
-            Room room = new Room();
-            room.setRoomType(roomDTO.getRoomType());
-            room.setRoomPrice(roomDTO.getRoomPrice());
-            room.setRoomDescription(roomDTO.getRoomDescription());
+            List<Amenity> amenities = new ArrayList<>();
+            if (roomDTO.getAmenityIds() != null) {
+                amenities = amenityRepository.findAllById(roomDTO.getAmenityIds());
+            }
+
+            Room room = ModelMapper.mapRoomDTOToRoom(roomDTO, amenities);
             room.setHotel(hotel);
 
             roomRepository.save(room);
@@ -71,6 +78,7 @@ public class RoomService implements IRoomService {
         return response;
     }
 
+
     @Override
     public Response updateRoom(Long hotelId, Long roomId, RoomDTO roomDTO, String email) {
         Response response = new Response();
@@ -82,9 +90,15 @@ public class RoomService implements IRoomService {
                 throw new MessException("Вы не являетесь владельцем этого номера");
             }
 
+            List<Amenity> amenities = new ArrayList<>();
+            if (roomDTO.getAmenityIds() != null) {
+                amenities = amenityRepository.findAllById(roomDTO.getAmenityIds());
+            }
+
             room.setRoomType(roomDTO.getRoomType());
             room.setRoomPrice(roomDTO.getRoomPrice());
             room.setRoomDescription(roomDTO.getRoomDescription());
+            room.setAmenities(amenities);
 
             roomRepository.save(room);
 
@@ -99,6 +113,7 @@ public class RoomService implements IRoomService {
         }
         return response;
     }
+
 
     @Override
     public Response deleteRoom(Long hotelId, Long roomId, String email) {

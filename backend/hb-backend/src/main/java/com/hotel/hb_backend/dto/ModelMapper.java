@@ -24,8 +24,24 @@ public class ModelMapper {
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
         roomDTO.setRoomDescription(room.getRoomDescription());
+        if (room.getAmenities() != null) {
+            List<AmenityDTO> amenities = mapAmenityListToDTO(room.getAmenities());
+            roomDTO.setAmenities(amenities);
+        }
         return roomDTO;
     }
+
+    public static Room mapRoomDTOToRoom(RoomDTO roomDTO, List<Amenity> amenities) {
+        Room room = new Room();
+
+        room.setId(roomDTO.getId());
+        room.setRoomType(roomDTO.getRoomType());
+        room.setRoomPrice(roomDTO.getRoomPrice());
+        room.setRoomDescription(roomDTO.getRoomDescription());
+        room.setAmenities(amenities);
+        return room;
+    }
+
 
     public static BookingDTO mapBookingEntityToBookingDTO(Booking booking) {
         BookingDTO bookingDTO = new BookingDTO();
@@ -112,6 +128,18 @@ public class ModelMapper {
 
     public static List<ReviewDTO> mapReviewListToDTO(List<Review> reviews) {
         return reviews.stream().map(ModelMapper::mapReviewToDTO).collect(Collectors.toList());
+    }
+    public static AmenityDTO mapAmenityEntityToDTO(Amenity amenity) {
+        AmenityDTO dto = new AmenityDTO();
+        dto.setId(amenity.getId());
+        dto.setName(amenity.getName());
+        return dto;
+    }
+
+    public static List<AmenityDTO> mapAmenityListToDTO(List<Amenity> amenities) {
+        return amenities.stream()
+                .map(ModelMapper::mapAmenityEntityToDTO)
+                .collect(Collectors.toList());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.hotel.hb_backend.service;
 
-import com.hotel.hb_backend.Config.ModelMapper;
+import com.hotel.hb_backend.ServiceInterface.IApplicationService;
+import com.hotel.hb_backend.dto.ModelMapper;
 import com.hotel.hb_backend.Repository.ApplicationFormRepository;
 import com.hotel.hb_backend.Repository.UserRepository;
 import com.hotel.hb_backend.dto.ApplicationFormDTO;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ApplicationFormService {
+public class ApplicationFormService implements IApplicationService {
 
     @Autowired
     private ApplicationFormRepository applicationFormRepository;
@@ -23,11 +24,10 @@ public class ApplicationFormService {
     @Autowired
     private UserRepository userRepository;
 
-    public Response submitApplicationForm(ApplicationFormDTO applicationFormDTO) {
+    public Response submitApplicationForm(ApplicationFormDTO applicationFormDTO, String email) {
         Response response = new Response();
-
         try {
-            User user = userRepository.findById(applicationFormDTO.getUserId())
+            User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new MessException("Пользователь не найден"));
 
             ApplicationForm form = new ApplicationForm();
@@ -39,18 +39,15 @@ public class ApplicationFormService {
             form.setAddress(applicationFormDTO.getAddress());
             form.setHotelName(applicationFormDTO.getHotelName());
             form.setProcessed(null);
+
             applicationFormRepository.save(form);
 
             response.setStatusCode(200);
             response.setMessage("Анкета успешно отправлена");
-        } catch (MessException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Ошибка при отправке анкеты: " + e.getMessage());
         }
-
         return response;
     }
 

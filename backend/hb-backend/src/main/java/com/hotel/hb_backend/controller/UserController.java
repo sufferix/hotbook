@@ -47,7 +47,7 @@ public class UserController {
     public ResponseEntity<Response> getLoggedInUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        Response response = userService.getMyInfo(email);
+        Response response = userService.getProfile(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
@@ -76,16 +76,6 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         Response response = userService.getHotelsOfLoggedInHotelier(email);
-        return ResponseEntity.status(response.getStatusCode()).body(response);
-    }
-
-    @GetMapping("/profile/bookings")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<Response> getMyBookingHistory() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-
-        Response response = userService.getUserBookingHistory(email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

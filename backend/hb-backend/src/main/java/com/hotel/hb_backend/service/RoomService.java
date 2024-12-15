@@ -7,16 +7,11 @@ import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.ServiceInterface.IRoomService;
-import com.hotel.hb_backend.Repository.BookingRepository;
 import com.hotel.hb_backend.Repository.RoomRepository;
-import com.hotel.hb_backend.Config.ModelMapper;
+import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service

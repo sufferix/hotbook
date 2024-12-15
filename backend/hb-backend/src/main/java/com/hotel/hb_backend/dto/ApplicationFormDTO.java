@@ -8,7 +8,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApplicationFormDTO {
     private Long id;
-    private Long userId;
     private String fullName;
     private String email;
     private String phoneNumber;

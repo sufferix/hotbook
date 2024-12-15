@@ -16,9 +16,7 @@ public interface IUserService {
 
     Response deleteUser(Long userId);
 
-    Response getMyInfo(String email);
-
-    Response getUserBookingHistory(String email);
+    Response getProfile(String email);
 
     Response blockUser(Long userId, boolean enable);
 

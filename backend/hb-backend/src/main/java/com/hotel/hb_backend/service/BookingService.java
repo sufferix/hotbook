@@ -1,21 +1,17 @@
 package com.hotel.hb_backend.service;
-
 import com.hotel.hb_backend.dto.BookingDTO;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.entity.Booking;
 import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
-import com.hotel.hb_backend.ServiceInterface.IRoomService;
 import com.hotel.hb_backend.Repository.BookingRepository;
 import com.hotel.hb_backend.Repository.RoomRepository;
 import com.hotel.hb_backend.Repository.UserRepository;
-import com.hotel.hb_backend.Config.ModelMapper;
+import com.hotel.hb_backend.dto.ModelMapper;
 import com.hotel.hb_backend.ServiceInterface.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -34,15 +30,12 @@ public class BookingService implements IBookingService {
     public Response createBooking(Long hotelId, Long roomId, String email, Booking bookingRequest) {
         Response response = new Response();
         try {
-            // Проверка существования пользователя
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new MessException("Пользователь не найден"));
 
-            // Проверка существования номера
             Room room = roomRepository.findById(roomId)
                     .orElseThrow(() -> new MessException("Номер не найден"));
 
-            // Проверка пересечений дат
             boolean hasConflicts = bookingRepository.existsByRoomAndDateRange(
                     room,
                     bookingRequest.getCheckInDate(),
@@ -52,7 +45,6 @@ public class BookingService implements IBookingService {
                 throw new MessException("Номер недоступен для бронирования на указанные даты");
             }
 
-            // Создание нового бронирования
             Booking booking = new Booking();
             booking.setRoom(room);
             booking.setUser(user);
@@ -79,20 +71,21 @@ public class BookingService implements IBookingService {
     public Response getMyBookings(String email) {
         Response response = new Response();
         try {
-            // Получение пользователя
             User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new MessException("Пользователь не найден"));
+                    .orElseThrow(() -> new MessException("Пользователь с email " + email + " не найден"));
 
-            // Получение списка бронирований
-            List<Booking> bookings = bookingRepository.findByUser(user);
+            List<Booking> bookings = user.getBookings();
             List<BookingDTO> bookingDTOs = ModelMapper.mapBookingListEntityToBookingListDTO(bookings);
 
             response.setStatusCode(200);
-            response.setMessage("Список бронирований успешно получен");
+            response.setMessage("История бронирований успешно получена");
             response.setBookingList(bookingDTOs);
+        } catch (MessException e) {
+            response.setStatusCode(404);
+            response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Ошибка при получении списка бронирований: " + e.getMessage());
+            response.setMessage("Ошибка при получении бронирований: " + e.getMessage());
         }
         return response;
     }
@@ -101,16 +94,13 @@ public class BookingService implements IBookingService {
     public Response cancelBooking(Long bookingId, String email) {
         Response response = new Response();
         try {
-            // Проверка существования бронирования
             Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() -> new MessException("Бронирование не найдено"));
 
-            // Проверка принадлежности бронирования пользователю
             if (!booking.getUser().getEmail().equals(email)) {
                 throw new MessException("Вы не можете отменить это бронирование");
             }
 
-            // Удаление бронирования
             bookingRepository.delete(booking);
 
             response.setStatusCode(200);

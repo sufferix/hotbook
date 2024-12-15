@@ -1,17 +1,14 @@
 package com.hotel.hb_backend.service;
 
 import com.hotel.hb_backend.Repository.HotelRepository;
-import com.hotel.hb_backend.dto.HotelDTO;
-import com.hotel.hb_backend.dto.LoginRequest;
-import com.hotel.hb_backend.dto.Response;
-import com.hotel.hb_backend.dto.UserDTO;
+import com.hotel.hb_backend.dto.*;
 import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Role;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.ServiceInterface.IUserService;
 import com.hotel.hb_backend.Repository.UserRepository;
-import com.hotel.hb_backend.Config.ModelMapper;
+import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -146,46 +143,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Response getMyInfo(String email) {
+    public Response getProfile(String email) {
         Response response = new Response();
         try {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new MessException("Пользователь с email " + email + " не найден"));
+
             UserDTO userDTO = ModelMapper.mapUserEntityToUserDTO(user);
             response.setStatusCode(200);
-            response.setMessage("Информация о текущем пользователе успешно получена");
+            response.setMessage("Информация о профиле успешно получена");
             response.setUser(userDTO);
         } catch (MessException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Ошибка при получении информации о текущем пользователе: " + e.getMessage());
+            response.setMessage("Ошибка при получении профиля: " + e.getMessage());
         }
         return response;
     }
 
-    @Override
-    public Response getUserBookingHistory(String email) {
-        Response response = new Response();
-        try {
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new MessException("Пользователь с email " + email + " не найден"));
-
-            UserDTO userDTO = ModelMapper.mapUserEntityToUserDTOPlusUserBookingsAndRoom(user);
-
-            response.setStatusCode(200);
-            response.setMessage("История бронирований успешно получена");
-            response.setUser(userDTO);
-        } catch (MessException e) {
-            response.setStatusCode(404);
-            response.setMessage(e.getMessage());
-        } catch (Exception e) {
-            response.setStatusCode(500);
-            response.setMessage("Ошибка при получении истории бронирований: " + e.getMessage());
-        }
-        return response;
-    }
 
 
     @Override

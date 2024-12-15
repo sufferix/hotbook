@@ -1,4 +1,4 @@
-package com.hotel.hb_backend.Security;
+package com.hotel.hb_backend.security;
 
 import com.hotel.hb_backend.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/rooms/**","/hotels/**","/amenities").permitAll()
+                        .requestMatchers("/auth/**", "/rooms/**", "/hotels/**","/amenities").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

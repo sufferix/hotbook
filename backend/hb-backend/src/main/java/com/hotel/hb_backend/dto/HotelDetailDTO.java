@@ -14,4 +14,6 @@ public class HotelDetailDTO {
     private String description;
     private int stars;
     private List<RoomDTO> rooms;
+    private List<PhotoDTO> photos;
+
 }

@@ -2,7 +2,7 @@ package com.hotel.hb_backend.controller;
 
 
 import com.hotel.hb_backend.dto.Response;
-import com.hotel.hb_backend.ServiceInterface.IUserService;
+import com.hotel.hb_backend.serviceinterface.IUserService;
 import com.hotel.hb_backend.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.hotel.hb_backend.ServiceInterface;
+package com.hotel.hb_backend.serviceinterface;
 
 import com.hotel.hb_backend.dto.AmenityDTO;
 

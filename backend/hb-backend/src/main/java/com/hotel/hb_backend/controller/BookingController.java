@@ -3,7 +3,7 @@ package com.hotel.hb_backend.controller;
 
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.entity.Booking;
-import com.hotel.hb_backend.ServiceInterface.IBookingService;
+import com.hotel.hb_backend.serviceinterface.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

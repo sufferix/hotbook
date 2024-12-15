@@ -1,7 +1,6 @@
-package com.hotel.hb_backend.Repository;
+package com.hotel.hb_backend.repository;
 
 import com.hotel.hb_backend.entity.Hotel;
-import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

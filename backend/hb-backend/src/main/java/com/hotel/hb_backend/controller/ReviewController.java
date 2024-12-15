@@ -1,9 +1,8 @@
 package com.hotel.hb_backend.controller;
 
-import com.hotel.hb_backend.ServiceInterface.IReviewService;
+import com.hotel.hb_backend.serviceinterface.IReviewService;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.ReviewDTO;
-import com.hotel.hb_backend.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

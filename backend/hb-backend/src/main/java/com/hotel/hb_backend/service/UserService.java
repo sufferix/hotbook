@@ -1,13 +1,13 @@
 package com.hotel.hb_backend.service;
 
-import com.hotel.hb_backend.Repository.HotelRepository;
+import com.hotel.hb_backend.repository.HotelRepository;
 import com.hotel.hb_backend.dto.*;
 import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Role;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
-import com.hotel.hb_backend.ServiceInterface.IUserService;
-import com.hotel.hb_backend.Repository.UserRepository;
+import com.hotel.hb_backend.serviceinterface.IUserService;
+import com.hotel.hb_backend.repository.UserRepository;
 import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,10 +1,10 @@
 package com.hotel.hb_backend.service;
 
-import com.hotel.hb_backend.ServiceInterface.IReviewService;
+import com.hotel.hb_backend.serviceinterface.IReviewService;
 import com.hotel.hb_backend.dto.ModelMapper;
-import com.hotel.hb_backend.Repository.HotelRepository;
-import com.hotel.hb_backend.Repository.ReviewRepository;
-import com.hotel.hb_backend.Repository.UserRepository;
+import com.hotel.hb_backend.repository.HotelRepository;
+import com.hotel.hb_backend.repository.ReviewRepository;
+import com.hotel.hb_backend.repository.UserRepository;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.ReviewDTO;
 import com.hotel.hb_backend.entity.Hotel;

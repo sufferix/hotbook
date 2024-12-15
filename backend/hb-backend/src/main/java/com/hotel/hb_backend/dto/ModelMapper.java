@@ -24,6 +24,19 @@ public class ModelMapper {
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
         roomDTO.setRoomDescription(room.getRoomDescription());
+
+        if (room.getPhotos() != null) {
+            List<PhotoDTO> photos = room.getPhotos().stream()
+                    .map(photo -> {
+                        PhotoDTO photoDTO = new PhotoDTO();
+                        photoDTO.setId(photo.getId());
+                        photoDTO.setUrl("/rooms/" + room.getId() + "/photos/" + photo.getFileName());
+                        return photoDTO;
+                    })
+                    .collect(Collectors.toList());
+            roomDTO.setPhotos(photos);
+        }
+
         if (room.getAmenities() != null) {
             List<AmenityDTO> amenities = mapAmenityListToDTO(room.getAmenities());
             roomDTO.setAmenities(amenities);
@@ -91,7 +104,15 @@ public class ModelMapper {
                     .collect(Collectors.toList());
             dto.setRooms(roomDTOs);
         }
-
+        List<PhotoDTO> photos = hotel.getPhotos().stream()
+                .map(photo -> {
+                    PhotoDTO photoDTO = new PhotoDTO();
+                    photoDTO.setId(photo.getId());
+                    photoDTO.setUrl("/hotels/" + hotel.getId() + "/photos/" + photo.getFileName());
+                    return photoDTO;
+                })
+                .collect(Collectors.toList());
+        dto.setPhotos(photos);
         return dto;
     }
     public static List<HotelDTO> mapHotelListEntityToHotelListDTO(List<Hotel> hotels) {

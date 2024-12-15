@@ -14,7 +14,7 @@ public class HotelSpecification {
                                                    LocalDate checkInDate, LocalDate checkOutDate) {
         return (root, query, cb) -> {
             query.distinct(true);
-            Join<Hotel, Room> roomJoin = root.join("rooms", JoinType.LEFT);
+            Join<Hotel, Room> roomJoin = root.join("static/uploads/rooms", JoinType.LEFT);
 
             Predicate criteria = cb.conjunction();
 

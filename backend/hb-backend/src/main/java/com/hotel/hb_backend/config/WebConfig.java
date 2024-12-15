@@ -1,4 +1,4 @@
-package com.hotel.hb_backend.Config;
+package com.hotel.hb_backend.config;
 
 
 import org.springframework.context.annotation.Bean;

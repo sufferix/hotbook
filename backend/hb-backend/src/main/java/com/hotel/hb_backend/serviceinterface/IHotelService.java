@@ -1,12 +1,15 @@
-package com.hotel.hb_backend.ServiceInterface;
+package com.hotel.hb_backend.serviceinterface;
 
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.HotelDTO;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+import java.util.List;
 
 public interface IHotelService {
 
+    Response addHotelPhotos(Long hotelId, String email, List<MultipartFile> files);
+    Response deleteHotelPhoto(Long hotelId, Long photoId, String email);
     Response getAllHotels();
 
     Response getHotelById(Long hotelId);

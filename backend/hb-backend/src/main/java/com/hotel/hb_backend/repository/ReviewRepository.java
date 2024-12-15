@@ -1,4 +1,4 @@
-package com.hotel.hb_backend.Repository;
+package com.hotel.hb_backend.repository;
 
 import com.hotel.hb_backend.entity.Review;
 import org.springframework.data.jpa.repository.JpaRepository;

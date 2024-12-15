@@ -1,9 +1,9 @@
 package com.hotel.hb_backend.service;
 
-import com.hotel.hb_backend.ServiceInterface.IApplicationService;
+import com.hotel.hb_backend.serviceinterface.IApplicationService;
 import com.hotel.hb_backend.dto.ModelMapper;
-import com.hotel.hb_backend.Repository.ApplicationFormRepository;
-import com.hotel.hb_backend.Repository.UserRepository;
+import com.hotel.hb_backend.repository.ApplicationFormRepository;
+import com.hotel.hb_backend.repository.UserRepository;
 import com.hotel.hb_backend.dto.ApplicationFormDTO;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.entity.ApplicationForm;

@@ -1,6 +1,6 @@
 package com.hotel.hb_backend.controller;
 
-import com.hotel.hb_backend.ServiceInterface.IRoomService;
+import com.hotel.hb_backend.serviceinterface.IRoomService;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.RoomDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +9,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/hotels/{hotelId}/rooms")
@@ -63,5 +66,32 @@ public class RoomController {
         Response response = roomService.deleteRoom(hotelId, roomId, email);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+    @PostMapping("/{roomId}/photos")
+    @PreAuthorize("hasAuthority('HOTELIER')")
+    public ResponseEntity<Response> uploadRoomPhotos(
+            @PathVariable Long hotelId,
+            @PathVariable Long roomId,
+            @RequestParam("files") List<MultipartFile> files) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Response response = roomService.addRoomPhotos(hotelId, roomId, email, files);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @DeleteMapping("/{roomId}/photos/{photoId}")
+    @PreAuthorize("hasAuthority('HOTELIER')")
+    public ResponseEntity<Response> deleteRoomPhoto(
+            @PathVariable Long hotelId,
+            @PathVariable Long roomId,
+            @PathVariable Long photoId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Response response = roomService.deleteRoomPhoto(hotelId, roomId, photoId, email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
 }
 

@@ -13,9 +13,9 @@ public class HotelPhoto {
     private Long id;
 
     @Column(nullable = false)
-    private String photoUrl;
+    private String fileName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel;
 
@@ -23,7 +23,8 @@ public class HotelPhoto {
     public String toString() {
         return "HotelPhoto{" +
                 "id=" + id +
-                ", photoUrl='" + photoUrl + '\'' +
+                ", fileName='" + fileName + '\'' +
                 '}';
     }
 }
+

@@ -1,6 +1,6 @@
 package com.hotel.hb_backend.controller;
 
-import com.hotel.hb_backend.ServiceInterface.IApplicationService;
+import com.hotel.hb_backend.serviceinterface.IApplicationService;
 import com.hotel.hb_backend.dto.ApplicationFormDTO;
 import com.hotel.hb_backend.dto.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class ApplicationFormController {
     @Autowired
     private IApplicationService applicationFormService;
 
-    //Пользователь отправляет анкету.
+    //Пользователь отправляет анкету
     @PostMapping("/submit")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Response> submitApplicationForm(@RequestBody ApplicationFormDTO applicationFormDTO) {
@@ -30,7 +30,7 @@ public class ApplicationFormController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    //Администратор получает список необработанных анкет.
+    //Администратор получает список необработанных анкет
 
     @GetMapping("/pending")
     @PreAuthorize("hasAuthority('ADMIN')")

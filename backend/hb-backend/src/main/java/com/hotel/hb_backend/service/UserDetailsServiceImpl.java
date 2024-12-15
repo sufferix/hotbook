@@ -1,7 +1,7 @@
 package com.hotel.hb_backend.service;
 
 import com.hotel.hb_backend.exception.MessException;
-import com.hotel.hb_backend.Repository.UserRepository;
+import com.hotel.hb_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

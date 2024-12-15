@@ -19,4 +19,5 @@ public class RoomDTO {
     private List<BookingDTO> bookings;
     private List<AmenityDTO> amenities;
     private List<Long> amenityIds;
+    private List<PhotoDTO> photos;
 }

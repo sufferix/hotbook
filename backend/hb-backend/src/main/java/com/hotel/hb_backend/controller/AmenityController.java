@@ -1,6 +1,6 @@
 package com.hotel.hb_backend.controller;
 
-import com.hotel.hb_backend.ServiceInterface.IAmenityService;
+import com.hotel.hb_backend.serviceinterface.IAmenityService;
 import com.hotel.hb_backend.dto.AmenityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.hotel.hb_backend.Security;
+package com.hotel.hb_backend.security;
 
 
 import com.hotel.hb_backend.service.UserDetailsServiceImpl;

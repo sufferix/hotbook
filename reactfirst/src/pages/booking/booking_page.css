@@ -1,0 +1,113 @@
+/* booking_page.css */
+.booking-page {
+    padding: 20px;
+    font-family: 'Open Sans', sans-serif;
+    max-width: 1200px; /* Ограничиваем ширину страницы */
+    margin: 0 auto; /* Центрируем страницу */
+    padding: 20px 20px; /* Задаем одинаковые отступы слева и справа */
+  }
+  
+ h1 {
+    text-align: left;
+    font-size: 3rem;
+    color: rgb(38, 70, 83);
+  }
+
+  h2 {
+    text-align: left;
+    font-size: 2rem;
+    color: rgb(38, 70, 83);
+    margin-bottom: 30px;
+  }
+  
+  .payment-card {
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  
+  /* Вся строка с полями и дополнительными элементами */
+  .input-row {
+    display: flex;
+    /*justify-content: space-between; /* Равномерное распределение */
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Одинаковый размер */
+  }
+  
+  .input-group label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  .input-group input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  /* Новая структура для радиокнопки и цены */
+  .additional-row {
+    display: flex;
+    justify-content: space-between; /* Радиокнопка слева, цена справа */
+    margin-top: 10px;
+  }
+  
+  .radio-group {
+    display: flex;
+    align-items: center;
+
+  }
+  
+  .radio-group input {
+    margin-right: 5px;
+  }
+  
+  .total-payment {
+    align-items: flex-end;
+    padding: 0 20px 0 100px;
+  }
+  
+  .total-payment p {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .total-payment h2 {
+    margin: 5px 0;
+    font-size: 24px;
+    text-align: center;
+    color: rgb(38, 70, 83);
+  }
+  
+  .btn-book {
+    background-color: #2c4b54;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .btn-book:hover {
+    background-color: #1f383f;
+  }
+  

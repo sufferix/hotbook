@@ -7,6 +7,7 @@ import ReviewsSection from "../../components/hotel_info/reviews";
 import "./hotel_page.css";
 
 function HotelInfoPage() {
+
     return (
       <div className="hotel-info-page">
         

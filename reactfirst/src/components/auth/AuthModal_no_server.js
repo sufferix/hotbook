@@ -13,13 +13,13 @@ function AuthModal({ onClose }) {
   const handleLogin = () => {
     // Имитация успешного входа
     onClose();
-    navigate("/dashboard/client"); // Перенаправление на личный кабинет клиента
+    navigate("/dashboard/admin"); // Перенаправление на личный кабинет клиента
   };
 
   const handleRegister = () => {
     // Имитация успешной регистрации
     onClose();
-    navigate("/dashboard/client"); // Перенаправление на личный кабинет клиента
+    navigate("/dashboard/admin"); // Перенаправление на личный кабинет клиента
   };
 
   return (

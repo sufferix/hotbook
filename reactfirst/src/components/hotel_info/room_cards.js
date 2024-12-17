@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function RoomCards() {
   const rooms = [
@@ -7,6 +8,12 @@ function RoomCards() {
     { category: "Тяжелый люкс", price: 300, image: "/images/room3.jpg" },
     { category: "Тяжелый люкс", price: 300, image: "/images/room4.jpg" },
   ];
+
+  const navigate = useNavigate();
+
+  const handleBookingClick = () => {
+    navigate("/booking"); // Переход на страницу бронирования
+  };
 
   return (
     <div className="room-cards-container">
@@ -17,7 +24,7 @@ function RoomCards() {
             <img src={room.image} alt={room.category} className="room-image" />
             <p className="room-category">{room.category}</p>
             <p className="room-price">{room.price} $/ночь</p>
-            <button className="book-button">Забронировать номер</button>
+            <button className="book-button" onClick={handleBookingClick}>Забронировать номер</button>
           </div>
         ))}
       </div>

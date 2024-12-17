@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from "react-router-dom";
+//import { getUserRole } from "./hooks/user_role";
 import Header from "./components/header/header";
-import AuthModal from "./components/auth/AuthModal_no_server";
+import AuthModal from "./components/auth/AuthModal";
 import Home from "./pages/homepage/home";
 import HotelSearchPage from "./pages/search/hotel_search";
 import HotelInfoPage from "./pages/hotel_page/hotel_page";
 import ClientDashboard from "./pages/user_acc/client_dashboard";
 import HotelOwnerDashboard from "./pages/owner_aсc/hotel_owner_dashboard";
 import AdminDashboard from "./pages/admin_acc/admin_dashboard";
+import BookingPage from "./pages/booking/booking_page";
+import BookingSuccess from "./pages/booking/booking_success";
 import "./App.css";
 
 function App() {
@@ -36,7 +39,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<HotelSearchPage />} />
           <Route path="/info" element={<HotelInfoPage />} />
-          <Route path="/dashboard/client" element={<ClientDashboard />} />
+          <Route path="/client-dashboard" element={<ClientDashboard />} />
+          <Route path="/owner-dashboard" element={<HotelOwnerDashboard />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/success" element={<BookingSuccess />} />
         </Routes>
 
         {/* Модальное окно авторизации */}

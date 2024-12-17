@@ -1,5 +1,7 @@
 package com.hotel.hb_backend.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.hotel.hb_backend.entity.HotelPhoto;
 import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.repository.HotelPhotoRepository;
@@ -15,30 +17,26 @@ import com.hotel.hb_backend.repository.HotelRepository;
 import com.hotel.hb_backend.serviceinterface.IHotelService;
 import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class HotelService implements IHotelService {
 
     @Autowired
     private HotelRepository hotelRepository;
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private HotelPhotoRepository hotelPhotoRepository;
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private Cloudinary cloudinary;
     @Override
     public Response getAllHotels() {
         Response response = new Response();
@@ -103,8 +101,6 @@ public class HotelService implements IHotelService {
 
         return response;
     }
-
-
 
     @Override
     public Response addHotel(HotelDTO hotelDTO, String email) {
@@ -172,10 +168,23 @@ public class HotelService implements IHotelService {
                 throw new MessException("Вы не можете удалить этот отель");
             }
 
+            List<Room> rooms = roomRepository.findByHotelId(hotelId);
+            for (Room room : rooms) {
+                String roomFolderPath = "rooms/" + room.getId();
+                cloudinary.api().deleteResourcesByPrefix(roomFolderPath, ObjectUtils.emptyMap());
+                cloudinary.api().deleteFolder(roomFolderPath, ObjectUtils.emptyMap());
+            }
+
+            roomRepository.deleteAll(rooms);
+
+            String hotelFolderPath = "hotels/" + hotelId;
+            cloudinary.api().deleteResourcesByPrefix(hotelFolderPath, ObjectUtils.emptyMap());
+            cloudinary.api().deleteFolder(hotelFolderPath, ObjectUtils.emptyMap());
+
             hotelRepository.delete(hotel);
 
             response.setStatusCode(200);
-            response.setMessage("Отель успешно удален");
+            response.setMessage("Отель, его номера и все фотографии успешно удалены");
         } catch (MessException e) {
             response.setStatusCode(403);
             response.setMessage(e.getMessage());
@@ -186,37 +195,30 @@ public class HotelService implements IHotelService {
         return response;
     }
 
-    @Value("${uploads.directory}")
-    private String uploadDir;
 
+
+    @Override
     public Response addHotelPhotos(Long hotelId, String email, List<MultipartFile> files) {
         Response response = new Response();
 
         try {
-            // Проверяем отель
             Hotel hotel = hotelRepository.findById(hotelId)
                     .orElseThrow(() -> new MessException("Отель не найден"));
 
-            // Проверяем, что отель принадлежит текущему пользователю
             if (!hotel.getUser().getEmail().equals(email)) {
                 throw new MessException("Вы не можете добавлять фотографии к этому отелю");
             }
 
-            // Сохраняем фотографии
-            String hotelPhotoDir = uploadDir + "/hotels/" + hotelId;
-            File directory = new File(hotelPhotoDir);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
             for (MultipartFile file : files) {
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get(hotelPhotoDir, fileName);
-                Files.write(filePath, file.getBytes());
+                Map<?, ?> uploadResult = cloudinary.uploader().upload(
+                        file.getBytes(),
+                        ObjectUtils.asMap("folder", "hotels/" + hotelId)
+                );
 
-                // Сохраняем запись в БД
+                String imageUrl = (String) uploadResult.get("secure_url");
+
                 HotelPhoto photo = new HotelPhoto();
-                photo.setFileName(fileName);
+                photo.setPhotoUrl(imageUrl);
                 photo.setHotel(hotel);
                 hotelPhotoRepository.save(photo);
             }
@@ -234,29 +236,28 @@ public class HotelService implements IHotelService {
         return response;
     }
 
+    @Override
     public Response deleteHotelPhoto(Long hotelId, Long photoId, String email) {
         Response response = new Response();
 
         try {
-            // Проверяем существование отеля
-            Hotel hotel = hotelRepository.findById(hotelId)
-                    .orElseThrow(() -> new MessException("Отель не найден"));
-
-            // Проверяем права доступа
-            if (!hotel.getUser().getEmail().equals(email)) {
-                throw new MessException("Вы не можете удалять фотографии этого отеля");
-            }
-
-            // Проверяем существование фотографии
             HotelPhoto photo = hotelPhotoRepository.findById(photoId)
                     .orElseThrow(() -> new MessException("Фотография не найдена"));
 
-            // Удаляем файл из файловой системы
-            String photoPath = uploadDir + "/hotels/" + hotelId + "/" + photo.getFileName();
-            Path filePath = Paths.get(photoPath);
-            Files.deleteIfExists(filePath);
+            if (!photo.getHotel().getId().equals(hotelId)) {
+                throw new MessException("Фотография не принадлежит указанному отелю");
+            }
 
-            // Удаляем запись из базы данных
+            if (!photo.getHotel().getUser().getEmail().equals(email)) {
+                throw new MessException("Вы не можете удалять фотографии этого отеля");
+            }
+
+            String publicId = photo.getPhotoUrl()
+                    .substring(photo.getPhotoUrl().lastIndexOf("/") + 1)
+                    .replace(".jpg", "")
+                    .replace(".png", "");
+
+            cloudinary.uploader().destroy("hotels/" + hotelId + "/" + publicId, ObjectUtils.emptyMap());
             hotelPhotoRepository.delete(photo);
 
             response.setStatusCode(200);
@@ -272,6 +273,7 @@ public class HotelService implements IHotelService {
         return response;
     }
 
+
     @Override
     public Response filterHotels(String city, List<Integer> stars, String roomType,
                                  List<Long> amenities, LocalDate checkInDate, LocalDate checkOutDate) {
@@ -283,7 +285,6 @@ public class HotelService implements IHotelService {
 
             List<Hotel> filteredHotels = hotelRepository.findAll(specification);
 
-            // Преобразуем результат в DTO
             List<HotelDTO> hotelDTOs = ModelMapper.mapHotelListEntityToHotelListDTO(filteredHotels);
 
             response.setStatusCode(200);

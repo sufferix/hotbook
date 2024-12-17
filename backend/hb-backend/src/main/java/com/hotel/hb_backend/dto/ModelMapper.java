@@ -30,7 +30,7 @@ public class ModelMapper {
                     .map(photo -> {
                         PhotoDTO photoDTO = new PhotoDTO();
                         photoDTO.setId(photo.getId());
-                        photoDTO.setUrl("/rooms/" + room.getId() + "/photos/" + photo.getFileName());
+                        photoDTO.setUrl("/rooms/" + room.getId() + "/photos/" + photo.getPhotoUrl());
                         return photoDTO;
                     })
                     .collect(Collectors.toList());
@@ -104,14 +104,16 @@ public class ModelMapper {
                     .collect(Collectors.toList());
             dto.setRooms(roomDTOs);
         }
+
         List<PhotoDTO> photos = hotel.getPhotos().stream()
                 .map(photo -> {
                     PhotoDTO photoDTO = new PhotoDTO();
                     photoDTO.setId(photo.getId());
-                    photoDTO.setUrl("/hotels/" + hotel.getId() + "/photos/" + photo.getFileName());
+                    photoDTO.setUrl(photo.getPhotoUrl());
                     return photoDTO;
                 })
                 .collect(Collectors.toList());
+
         dto.setPhotos(photos);
         return dto;
     }

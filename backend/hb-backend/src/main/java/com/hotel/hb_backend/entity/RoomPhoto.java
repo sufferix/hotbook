@@ -13,7 +13,7 @@ public class RoomPhoto {
     private Long id;
 
     @Column(nullable = false)
-    private String fileName;
+    private String photoUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id", nullable = false)
@@ -23,7 +23,7 @@ public class RoomPhoto {
     public String toString() {
         return "RoomPhoto{" +
                 "id=" + id +
-                ", fileName='" + fileName + '\'' +
+                ", photo='" + photoUrl + '\'' +
                 '}';
     }
 }

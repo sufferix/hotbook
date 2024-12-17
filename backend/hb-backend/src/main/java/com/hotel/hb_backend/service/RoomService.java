@@ -1,5 +1,7 @@
 package com.hotel.hb_backend.service;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.hotel.hb_backend.entity.RoomPhoto;
 import com.hotel.hb_backend.repository.AmenityRepository;
 import com.hotel.hb_backend.repository.HotelRepository;
@@ -18,12 +20,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class RoomService implements IRoomService {
@@ -37,8 +36,8 @@ public class RoomService implements IRoomService {
     private AmenityRepository amenityRepository;
     @Autowired
     private RoomPhotoRepository roomPhotoRepository;
-    @Value("${uploads.directory}")
-    private String uploadDir;
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public Response getRoomsByHotelId(Long hotelId) {
@@ -135,13 +134,17 @@ public class RoomService implements IRoomService {
                     .orElseThrow(() -> new MessException("Номер не найден"));
 
             if (!room.getHotel().getUser().getEmail().equals(email)) {
-                throw new MessException("Вы не являетесь владельцем этого номера");
+                throw new MessException("Вы не можете удалить этот номер");
             }
+
+            String folderPath = "rooms/" + roomId;
+            cloudinary.api().deleteResourcesByPrefix(folderPath, ObjectUtils.emptyMap());
+            cloudinary.api().deleteFolder(folderPath, ObjectUtils.emptyMap());
 
             roomRepository.delete(room);
 
             response.setStatusCode(200);
-            response.setMessage("Номер успешно удален");
+            response.setMessage("Номер и все фотографии успешно удалены");
         } catch (MessException e) {
             response.setStatusCode(403);
             response.setMessage(e.getMessage());
@@ -152,6 +155,7 @@ public class RoomService implements IRoomService {
         return response;
     }
 
+    @Override
     public Response addRoomPhotos(Long hotelId, Long roomId, String email, List<MultipartFile> files) {
         Response response = new Response();
 
@@ -163,25 +167,22 @@ public class RoomService implements IRoomService {
                 throw new MessException("Вы не являетесь владельцем этого номера");
             }
 
-            String roomPhotoDir = uploadDir + "/rooms/" + roomId;
-            File directory = new File(roomPhotoDir);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
             for (MultipartFile file : files) {
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get(roomPhotoDir, fileName);
-                Files.write(filePath, file.getBytes());
+                Map<?, ?> uploadResult = cloudinary.uploader().upload(
+                        file.getBytes(),
+                        ObjectUtils.asMap("folder", "rooms/" + roomId)
+                );
+
+                String imageUrl = (String) uploadResult.get("secure_url");
 
                 RoomPhoto photo = new RoomPhoto();
-                photo.setFileName(fileName);
+                photo.setPhotoUrl(imageUrl);
                 photo.setRoom(room);
                 roomPhotoRepository.save(photo);
             }
 
             response.setStatusCode(201);
-            response.setMessage("Фотографии успешно добавлены");
+            response.setMessage("Фотографии номера успешно добавлены");
         } catch (MessException e) {
             response.setStatusCode(403);
             response.setMessage(e.getMessage());
@@ -193,6 +194,7 @@ public class RoomService implements IRoomService {
         return response;
     }
 
+    @Override
     public Response deleteRoomPhoto(Long hotelId, Long roomId, Long photoId, String email) {
         Response response = new Response();
 
@@ -207,13 +209,17 @@ public class RoomService implements IRoomService {
             RoomPhoto photo = roomPhotoRepository.findById(photoId)
                     .orElseThrow(() -> new MessException("Фотография не найдена"));
 
-            String photoPath = uploadDir + "/rooms/" + roomId + "/" + photo.getFileName();
-            Files.deleteIfExists(Paths.get(photoPath));
+            String publicId = photo.getPhotoUrl()
+                    .substring(photo.getPhotoUrl().lastIndexOf("/") + 1)
+                    .replace(".jpg", "") // Замените расширение, если нужно
+                    .replace(".png", "");
+
+            cloudinary.uploader().destroy("rooms/" + roomId + "/" + publicId, ObjectUtils.emptyMap());
 
             roomPhotoRepository.delete(photo);
 
             response.setStatusCode(200);
-            response.setMessage("Фотография успешно удалена");
+            response.setMessage("Фотография номера успешно удалена");
         } catch (MessException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -224,6 +230,7 @@ public class RoomService implements IRoomService {
 
         return response;
     }
+
 
 }
 

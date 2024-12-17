@@ -1,7 +1,9 @@
 package com.hotel.hb_backend.service;
 
 import com.hotel.hb_backend.entity.HotelPhoto;
+import com.hotel.hb_backend.entity.Room;
 import com.hotel.hb_backend.repository.HotelPhotoRepository;
+import com.hotel.hb_backend.repository.RoomRepository;
 import com.hotel.hb_backend.repository.UserRepository;
 import com.hotel.hb_backend.dto.HotelDTO;
 import com.hotel.hb_backend.dto.HotelDetailDTO;
@@ -14,6 +16,7 @@ import com.hotel.hb_backend.serviceinterface.IHotelService;
 import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +24,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,6 +37,8 @@ public class HotelService implements IHotelService {
     private UserRepository userRepository;
     @Autowired
     private HotelPhotoRepository hotelPhotoRepository;
+    @Autowired
+    private RoomRepository roomRepository;
     @Override
     public Response getAllHotels() {
         Response response = new Response();
@@ -50,12 +56,15 @@ public class HotelService implements IHotelService {
     }
 
     @Override
-    public Response getHotelById(Long hotelId) {
+    public Response getHotelByIdWithoutFilters(Long hotelId) {
         Response response = new Response();
+
         try {
             Hotel hotel = hotelRepository.findById(hotelId)
                     .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
+
             HotelDetailDTO hotelDetailDTO = ModelMapper.mapHotelToDetailDTO(hotel);
+
             response.setStatusCode(200);
             response.setMessage("Информация об отеле успешно получена");
             response.setHotelDetail(hotelDetailDTO);
@@ -64,10 +73,38 @@ public class HotelService implements IHotelService {
             response.setMessage(e.getMessage());
         } catch (Exception e) {
             response.setStatusCode(500);
-            response.setMessage("Ошибка при получении отеля: " + e.getMessage());
+            response.setMessage("Ошибка при получении информации об отеле: " + e.getMessage());
         }
+
         return response;
     }
+
+    @Override
+    public Response getHotelByIdWithFilters(Long hotelId, LocalDate checkInDate, LocalDate checkOutDate, List<Long> amenities) {
+        Response response = new Response();
+
+        try {
+            Hotel hotel = hotelRepository.findById(hotelId)
+                    .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
+
+            List<Room> availableRooms = roomRepository.findAvailableRoomsByHotelIdAndFilters(
+                    hotelId, checkInDate, checkOutDate, amenities);
+
+            HotelDetailDTO hotelDetailDTO = ModelMapper.mapHotelToDetailDTO(hotel);
+            hotelDetailDTO.setRooms(ModelMapper.mapRoomListEntityToRoomListDTO(availableRooms));
+
+            response.setStatusCode(200);
+            response.setMessage("Информация об отеле успешно получена");
+            response.setHotelDetail(hotelDetailDTO);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при получении информации об отеле: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+
 
     @Override
     public Response addHotel(HotelDTO hotelDTO, String email) {
@@ -230,6 +267,31 @@ public class HotelService implements IHotelService {
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Ошибка при удалении фотографии: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response filterHotels(String city, List<Integer> stars, String roomType,
+                                 List<Long> amenities, LocalDate checkInDate, LocalDate checkOutDate) {
+        Response response = new Response();
+
+        try {
+            Specification<Hotel> specification = HotelSpecification.withFilters(
+                    city, stars, roomType, amenities, checkInDate, checkOutDate);
+
+            List<Hotel> filteredHotels = hotelRepository.findAll(specification);
+
+            // Преобразуем результат в DTO
+            List<HotelDTO> hotelDTOs = ModelMapper.mapHotelListEntityToHotelListDTO(filteredHotels);
+
+            response.setStatusCode(200);
+            response.setMessage("Фильтрованные отели успешно получены");
+            response.setHotelList(hotelDTOs);
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при фильтрации отелей: " + e.getMessage());
         }
 
         return response;

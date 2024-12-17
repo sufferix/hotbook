@@ -7,49 +7,47 @@ import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class HotelSpecification {
 
-    public static Specification<Hotel> withFilters(String city, Integer stars, String roomType,
-                                                   LocalDate checkInDate, LocalDate checkOutDate) {
+    public static Specification<Hotel> withFilters(String city, List<Integer> stars, String roomType,
+                                                   List<Long> amenities, LocalDate checkInDate, LocalDate checkOutDate) {
         return (root, query, cb) -> {
             query.distinct(true);
-            Join<Hotel, Room> roomJoin = root.join("static/uploads/rooms", JoinType.LEFT);
+            Join<Hotel, Room> roomJoin = root.join("rooms", JoinType.LEFT);
+            Join<Room, ?> amenityJoin = null;
+
+            if (amenities != null && !amenities.isEmpty()) {
+                amenityJoin = roomJoin.join("amenities", JoinType.LEFT);
+            }
 
             Predicate criteria = cb.conjunction();
 
-            // Фильтр по городу
             if (city != null && !city.isBlank()) {
                 criteria = cb.and(criteria, cb.equal(root.get("city"), city));
             }
-
-            // Фильтр по звездам
-            if (stars != null) {
-                criteria = cb.and(criteria, cb.equal(root.get("stars"), Integer.valueOf(stars)));
+            if (stars != null && !stars.isEmpty()) {
+                criteria = cb.and(criteria, root.get("stars").in(stars));
             }
-
-
-            // Фильтр по типу комнаты
             if (roomType != null && !roomType.isBlank()) {
                 criteria = cb.and(criteria, cb.equal(roomJoin.get("roomType"), roomType));
             }
-
-            // Фильтр по доступности номеров
+            if (amenities != null && !amenities.isEmpty()) {
+                criteria = cb.and(criteria, amenityJoin.get("id").in(amenities));
+            }
             if (checkInDate != null && checkOutDate != null) {
                 Subquery<Long> subquery = query.subquery(Long.class);
                 Root<Booking> bookingRoot = subquery.from(Booking.class);
                 subquery.select(bookingRoot.get("room").get("id"))
                         .where(
                                 cb.and(
-                                        cb.lessThanOrEqualTo(bookingRoot.get("checkInDate"), checkOutDate), // Начало бронирования <= конец нового периода
-                                        cb.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), checkInDate) // Конец бронирования >= начало нового периода
+                                        cb.lessThanOrEqualTo(bookingRoot.get("checkInDate"), checkOutDate),
+                                        cb.greaterThanOrEqualTo(bookingRoot.get("checkOutDate"), checkInDate)
                                 )
                         );
-
-                // Исключаем комнаты, занятые в указанный период
                 criteria = cb.and(criteria, cb.not(roomJoin.get("id").in(subquery)));
             }
-
             return criteria;
         };
     }

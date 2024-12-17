@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,11 +29,28 @@ public class HotelController {
     }
 
     //Получение подробной информации об отеле
+// Получение отеля с фильтрацией по датам и удобствам
     @GetMapping("/{hotelId}")
-    public ResponseEntity<Response> getHotelById(@PathVariable Long hotelId) {
-        Response response = hotelService.getHotelById(hotelId);
+    public ResponseEntity<Response> getHotelByIdWithFilters(
+            @PathVariable Long hotelId,
+            @RequestParam(required = false) String checkInDate,
+            @RequestParam(required = false) String checkOutDate,
+            @RequestParam(required = false) List<Long> amenities) {
+
+        Response response;
+
+        // Если даты не переданы, вызываем обычный метод
+        if (checkInDate == null || checkOutDate == null) {
+            response = hotelService.getHotelByIdWithoutFilters(hotelId);
+        } else {
+            response = hotelService.getHotelByIdWithFilters(
+                    hotelId, LocalDate.parse(checkInDate), LocalDate.parse(checkOutDate), amenities);
+        }
+
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
+
+
 
     @PostMapping
     @PreAuthorize("hasAuthority('HOTELIER')")
@@ -87,6 +105,21 @@ public class HotelController {
         String email = authentication.getName();
 
         Response response = hotelService.deleteHotelPhoto(hotelId, photoId, email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Response> filterHotels(
+            @RequestParam String city,
+            @RequestParam(required = false) List<Integer> stars,
+            @RequestParam(required = false) String roomType,
+            @RequestParam(required = false) List<Long> amenities,
+            @RequestParam String checkInDate,
+            @RequestParam String checkOutDate) {
+
+        Response response = hotelService.filterHotels(
+                city, stars, roomType, amenities, LocalDate.parse(checkInDate), LocalDate.parse(checkOutDate));
+
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

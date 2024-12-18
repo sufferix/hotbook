@@ -28,4 +28,5 @@ public class Response {
     private List<HotelDTO> hotelList;
     private ApplicationFormDTO applicationForm;
     private List<ApplicationFormDTO> applicationFormList;
+    private List<String> cities;
 }

@@ -16,7 +16,6 @@ import com.hotel.hb_backend.serviceinterface.IRoomService;
 import com.hotel.hb_backend.repository.RoomRepository;
 import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -211,7 +210,7 @@ public class RoomService implements IRoomService {
 
             String publicId = photo.getPhotoUrl()
                     .substring(photo.getPhotoUrl().lastIndexOf("/") + 1)
-                    .replace(".jpg", "") // Замените расширение, если нужно
+                    .replace(".jpg", "")
                     .replace(".png", "");
 
             cloudinary.uploader().destroy("rooms/" + roomId + "/" + publicId, ObjectUtils.emptyMap());

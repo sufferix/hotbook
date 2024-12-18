@@ -21,6 +21,11 @@ public class HotelController {
     @Autowired
     private IHotelService hotelService;
 
+    @GetMapping("/cities")
+    public ResponseEntity<Response> getAllCities() {
+        Response response = hotelService.getAllCities();
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
     // Получение списка всех отелей
     @GetMapping
     public ResponseEntity<Response> getAllHotels() {

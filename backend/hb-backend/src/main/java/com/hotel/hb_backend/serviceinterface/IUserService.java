@@ -21,5 +21,6 @@ public interface IUserService {
     Response blockUser(Long userId, boolean enable);
 
     Response updateUserProfile(String email, UserDTO userDTO);
+
     Response getHotelsOfLoggedInHotelier(String email);
 }

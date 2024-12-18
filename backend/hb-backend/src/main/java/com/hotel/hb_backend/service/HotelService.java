@@ -37,6 +37,22 @@ public class HotelService implements IHotelService {
     private RoomRepository roomRepository;
     @Autowired
     private Cloudinary cloudinary;
+
+    @Override
+    public Response getAllCities() {
+        Response response = new Response();
+        try {
+            List<String> cities = hotelRepository.findAllDistinctCities();
+            response.setStatusCode(200);
+            response.setMessage("Список городов успешно получен");
+            response.setCities(cities);  // Добавь поле `cities` в `Response`
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Ошибка при получении списка городов: " + e.getMessage());
+        }
+        return response;
+    }
+
     @Override
     public Response getAllHotels() {
         Response response = new Response();

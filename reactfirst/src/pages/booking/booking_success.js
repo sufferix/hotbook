@@ -1,46 +1,69 @@
-// pages/BookingSuccess.js
 import React from "react";
-import { useLocation } from "react-router-dom";
-import BookingInfo from "../../components/booking/booking_info";
-import PaymentCard from "../../components/booking/payment_card";
-import NavigationButtons from "../../components/booking/nav_btns";
+import { useLocation, useNavigate } from "react-router-dom";
+import BookingInfo from "../../components/booking/booking_info"; // компонент с прошлой страницы
+import "./booking_success.css";
+
+const PaymentInfoCard = ({ paymentInfo }) => {
+  return (
+    <div className="payment-info-card">
+      <p>
+        <strong>{paymentInfo.fullName}</strong>
+      </p>
+      <p>{paymentInfo.email}</p>
+      <p>наличными при заселении</p>
+      <p className="total-price">
+        <strong>{paymentInfo.price} ₽</strong>
+      </p>
+    </div>
+  );
+};
 
 const BookingSuccess = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Данные бронирования
-  const { bookingDetails } = location.state || {
-    bookingDetails: {
+  // Получаем данные из состояния или используем тестовые данные
+  const {
+    bookingDetails = {
       hotelName: "Название отеля",
-      category: "Тяжелый люкс",
+      roomCategory: "Тяжелый люкс",
       checkIn: "20 окт.",
       checkOut: "25 окт.",
       guests: "2 взрослых",
-      clientName: "Фамилия Имя Отчество",
-      email: "pochta@example.com",
-      price: "18 000 ₽",
+      price: 18000,
     },
-  };
+    paymentInfo = {
+      fullName: "Фамилия Имя Отчество",
+      email: "pochta@example.com",
+      price: 18000,
+    },
+  } = location.state || {};
 
   return (
-    <div className="booking-success">
-      <h1 className="success-title">Номер успешно забронирован!</h1>
-      <BookingInfo
-        hotelName={bookingDetails.hotelName}
-        category={bookingDetails.category}
-        checkIn={bookingDetails.checkIn}
-        checkOut={bookingDetails.checkOut}
-        guests={bookingDetails.guests}
-      />
-      <PaymentCard
-        clientName={bookingDetails.clientName}
-        email={bookingDetails.email}
-        price={bookingDetails.price}
-      />
-      <NavigationButtons />
+    <div className="success-booking-page">
+      <h1>Номер успешно забронирован!</h1>
+
+      <h2>Информация о номере</h2>
+      <BookingInfo bookingDetails={bookingDetails} />
+
+      <h2>Информация об оплате</h2>
+      <PaymentInfoCard paymentInfo={paymentInfo} />
+
+      <div className="navigation-buttons">
+        <button onClick={() => navigate("/")} className="nav-button">
+          На главную
+        </button>
+        <button
+          onClick={() => navigate("/dashboard/client")}
+          className="nav-button"
+        >
+          В личный кабинет
+        </button>
+      </div>
     </div>
   );
 };
 
 export default BookingSuccess;
+
 

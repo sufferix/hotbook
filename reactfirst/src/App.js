@@ -12,6 +12,10 @@ import AdminDashboard from "./pages/admin_acc/admin_dashboard";
 import BookingPage from "./pages/booking/booking_page";
 import BookingSuccess from "./pages/booking/booking_success";
 import "./App.css";
+import axios from "axios";
+
+// Использование переменной окружения
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);

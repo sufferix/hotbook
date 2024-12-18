@@ -4,70 +4,69 @@ import ProfileEditForm from "../../components/account/profile_edit_form";
 import LogoutButton from "../../components/account/logout_button";
 import "./hotel_owner_dashboard.css";
 
-const HotelOwnerDashboard = () => {
-  const [profile, setProfile] = useState({
-    name: "",
-    surname: "",
-    email: "",
-    phoneNumber: "",
-  });
+axios.defaults.baseURL = "https://your-api-url.com";
+
+function HotelOwnerDashboard() {
+  const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [hotels, setHotels] = useState([]); // Состояние для списка отелей владельца
+  const [hotels, setHotels] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Получение данных профиля и списка отелей владельца
+  // Загрузка профиля
   useEffect(() => {
-    const fetchProfileAndHotels = async () => {
-      try {
-        // Получение профиля владельца отеля
-        const profileResponse = await axios.get("/api/users/profile", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setProfile(profileResponse.data.user);
-
-        // Получение списка отелей текущего владельца
-        const hotelsResponse = await axios.get("/api/users/my-hotels", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        setHotels(hotelsResponse.data.hotelList || []);
-      } catch (error) {
-        console.error("Ошибка при получении данных профиля и отелей:", error);
-      }
-    };
-
-    fetchProfileAndHotels();
+    loadProfile();
   }, []);
 
-  // Сохранение отредактированного профиля
-  const handleSaveProfile = async (updatedProfile) => {
+  const loadProfile = async () => {
     try {
-      const response = await axios.put("/api/users/profile", updatedProfile, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get("/users/profile");
       setProfile(response.data.user);
-      setEditing(false);
-      alert("Профиль успешно обновлен!");
     } catch (error) {
-      console.error("Ошибка при сохранении профиля:", error);
-      alert("Не удалось сохранить изменения профиля.");
+      setErrorMessage("Ошибка загрузки профиля");
     }
   };
 
-  // Обработка выхода из системы
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    window.location.href = "/login";
+  // Загрузка отелей владельца
+  useEffect(() => {
+    loadHotels();
+  }, []);
+
+  const loadHotels = async () => {
+    try {
+      const response = await axios.get("/users/my-hotels");
+      setHotels(response.data.hotelList || []);
+    } catch (error) {
+      setErrorMessage("Ошибка загрузки отелей");
+    }
+  };
+
+  const saveProfile = async (updatedProfile) => {
+    try {
+      const response = await axios.put("/users/profile", updatedProfile);
+      setProfile(response.data.user);
+      setEditing(false);
+    } catch (error) {
+      setErrorMessage("Ошибка сохранения профиля");
+    }
   };
 
   const handleEditHotel = (hotelId) => {
-    // Перенаправление на страницу редактирования отеля (если есть отдельный маршрут)
-    window.location.href = `/edit-hotel/${hotelId}`;
+    console.log(`Редактирование отеля с ID ${hotelId}`);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
+  if (!profile) {
+    return <p>Загрузка профиля...</p>;
+  }
 
   return (
     <div className="hotel-owner-dashboard">
       <header className="dashboard-header">
-        <h1>Личный кабинет владельца отеля</h1>
+        <h1>Личный кабинет владельца</h1>
       </header>
 
       <div className="profile-section">
@@ -78,56 +77,47 @@ const HotelOwnerDashboard = () => {
               <p className="owner-name">
                 {profile.name} {profile.surname}
               </p>
-              <p className="owner-email">{profile.email}</p>
-              <p className="owner-phone">{profile.phoneNumber}</p>
+              <p className="owner-role">владелец отеля</p>
               <button className="edit-profile-button" onClick={() => setEditing(true)}>
                 Редактировать профиль
               </button>
               <LogoutButton onLogout={handleLogout} />
             </>
           ) : (
-            <ProfileEditForm initialData={profile} onSave={handleSaveProfile} />
+            <ProfileEditForm initialData={profile} onSave={saveProfile} />
           )}
         </div>
       </div>
 
-      {/* Список отелей владельца */}
-      {!editing && (
-        <>
-          <h2>Мои отели</h2>
-          <div className="hotels-list">
-            {hotels.length > 0 ? (
-              hotels.map((hotel) => (
-                <div key={hotel.id} className="hotel-card">
-                  <div className="hotel-image-placeholder">Фото</div>
-                  <div className="hotel-info">
-                    <p className="hotel-name">{hotel.name}</p>
-                    <p className="hotel-address">{hotel.address}</p>
-                    <p className="hotel-stars">
-                      {Array(hotel.stars)
-                        .fill("⭐")
-                        .join(" ")}
-                    </p>
-                  </div>
-                  <button
-                    className="edit-hotel-button"
-                    onClick={() => handleEditHotel(hotel.id)}
-                  >
-                    Изменить
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p>У вас пока нет добавленных отелей.</p>
-            )}
+      <div className="hotel-section">
+        <h2>Мои отели</h2>
+        {hotels.map((hotel) => (
+          <div key={hotel.id} className="hotel-card">
+            <div className="hotel-image-placeholder">Фото</div>
+            <div className="hotel-info">
+              <p className="hotel-name">{hotel.name}</p>
+              <p className="hotel-address">{hotel.city}</p>
+              <p className="hotel-stars">
+                {Array(hotel.stars)
+                  .fill("⭐")
+                  .join(" ")}
+              </p>
+            </div>
+            <button
+              className="edit-hotel-button"
+              onClick={() => handleEditHotel(hotel.id)}
+            >
+              Изменить
+            </button>
           </div>
-        </>
-      )}
+        ))}
+      </div>
     </div>
   );
-};
+}
 
 export default HotelOwnerDashboard;
+
 
 
 

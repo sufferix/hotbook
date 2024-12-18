@@ -1,5 +1,5 @@
 import React from "react";
-import "./main_routes.css";
+
 
 function MainContent() {
   const routes = [
@@ -11,7 +11,6 @@ function MainContent() {
 
   return (
     <div className="main-content">
-      <h2>Популярные маршруты</h2>
       <div className="route-grid">
         {routes.map((route, index) => (
           <div key={index} className="route">

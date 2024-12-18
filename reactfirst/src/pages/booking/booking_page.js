@@ -1,42 +1,32 @@
-import React, { useState } from "react";
-import BookingInfo from "../../components/booking/booking_info";
-import PaymentForm from "../../components/booking/payment_form";
-import PaymentSummary from "../../components/booking/payment_summary";
+import React from "react";
+import BookingInfo from "../../components/booking/booking_info"; // Импорт компонента карточки отеля
+import BookingForm from "../../components/booking/booking_form";
 import "./booking_page.css";
 
 const BookingPage = () => {
-  const [clientData, setClientData] = useState({});
-  const totalPrice = 18000; // Сумма к оплате
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setClientData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleBooking = () => {
-    console.log("Данные клиента:", clientData);
-    alert("Бронирование успешно!");
+  const handleBookingSubmit = (data) => {
+    console.log("Данные для бронирования:", data);
+    alert("Бронирование успешно оформлено!");
   };
 
   return (
     <div className="booking-page">
-      <h1>Бронирование номера</h1>
-      <section className="hotel-info-section">
-        <BookingInfo
-          hotelName="Название отеля"
-          roomCategory="Категория номера: Тяжелый люкс"
-          checkIn="20 окт."
-          checkOut="25 окт."
-          guests="2"
-        />
+      <h1 className="page-title">Бронирование номера</h1>
+
+      {/* Блок информации о номере */}
+      <section className="booking-info">
+        <h2>Информация о номере</h2>
+        <BookingInfo />
       </section>
 
-      <h2>Информация об оплате</h2>
-      <section className="payment-section">
-        <PaymentForm onInputChange={handleInputChange} />
+      {/* Блок информации об оплате */}
+      <section className="booking-payment">
+        <h2>Информация об оплате</h2>
+        <BookingForm onSubmit={handleBookingSubmit} />
       </section>
     </div>
   );
 };
 
 export default BookingPage;
+

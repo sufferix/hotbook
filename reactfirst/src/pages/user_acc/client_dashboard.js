@@ -8,62 +8,63 @@ import OwnershipApplicationModal from "../../components/ownership/ownership_moda
 import "./client_dashboard.css";
 
 function ClientDashboard() {
-  const [profile, setProfile] = useState(null); // Начальное состояние null
+  const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [bookings, setBookings] = useState([]); // Состояние для бронирований
-  const [isModalOpen, setIsModalOpen] = useState(false); // Состояние для модального окна
+  const [bookings, setBookings] = useState([]);
+  const [hasBooking, setHasBooking] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // Получение профиля и бронирований пользователя при загрузке
   useEffect(() => {
-    const fetchProfileAndBookings = async () => {
-      try {
-        console.log("Начало запроса профиля...");
-        const profileResponse = await axios.get("/api/users/profile", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        console.log("Профиль загружен:", profileResponse.data);
-        setProfile(profileResponse.data.user);
-  
-        console.log("Начало запроса бронирований...");
-        const bookingsResponse = await axios.get("/api/bookings/my", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        });
-        console.log("Бронирования загружены:", bookingsResponse.data);
-        setBookings(bookingsResponse.data.bookings || []);
-      } catch (error) {
-        console.error("Ошибка при загрузке данных:", error);
-      }
-    };
-  
-    fetchProfileAndBookings();
+    loadProfile();
+    loadBookings();
   }, []);
-  
 
-  // Сохранение отредактированного профиля
-  const handleSaveProfile = async (updatedProfile) => {
+  const loadProfile = async () => {
     try {
-      const response = await axios.put("/api/users/profile", updatedProfile, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const response = await axios.get("/users/profile");
       setProfile(response.data.user);
-      setEditing(false);
-      alert("Профиль успешно обновлен!");
     } catch (error) {
-      console.error("Ошибка при сохранении профиля:", error);
-      alert("Не удалось сохранить изменения профиля.");
+      setErrorMessage("Ошибка загрузки профиля");
     }
   };
 
-  // Обработка выхода из системы
+  const saveProfile = async (updatedProfile) => {
+    try {
+      const response = await axios.put("/users/profile", updatedProfile);
+      setProfile(response.data.user);
+      setEditing(false);
+    } catch (error) {
+      setErrorMessage("Ошибка сохранения профиля");
+    }
+  };
+
+  const loadBookings = async () => {
+    try {
+      const response = await axios.get("/bookings");
+      setBookings(response.data.bookings);
+      setHasBooking(response.data.bookings.length > 0);
+    } catch (error) {
+      setErrorMessage("Ошибка загрузки бронирований");
+    }
+  };
+
+  const cancelBooking = async (bookingId) => {
+    try {
+      await axios.delete(`/bookings/${bookingId}/cancel`);
+      loadBookings();
+    } catch (error) {
+      setErrorMessage("Ошибка отмены бронирования");
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("role");
     window.location.href = "/login";
   };
 
   if (!profile) {
-    // Отображаем заглушку или спиннер, пока профиль не загружен
-    return <div>Загрузка...</div>;
+    return <p>Загрузка профиля...</p>;
   }
 
   return (
@@ -81,31 +82,29 @@ function ClientDashboard() {
                 {profile.name} {profile.surname}
               </p>
               <p className="user-email">{profile.email}</p>
-              <p className="user-phone">{profile.phoneNumber}</p>
               <button className="edit-button" onClick={() => setEditing(true)}>
                 Редактировать профиль
               </button>
               <LogoutButton onLogout={handleLogout} />
             </>
           ) : (
-            <ProfileEditForm initialData={profile} onSave={handleSaveProfile} />
+            <ProfileEditForm
+              initialData={profile}
+              onSave={saveProfile}
+            />
           )}
         </div>
       </div>
 
-      {/* Информация о бронированиях */}
       {!editing && (
         <>
-          <h2>Мои бронирования</h2>
-          {bookings.length > 0 ? (
+          <h2>Информация о бронировании</h2>
+          {hasBooking ? (
             bookings.map((booking) => (
               <BookingInfo
                 key={booking.id}
-                hotelName={booking.hotelName}
-                roomType={booking.roomType}
-                checkInDate={booking.checkInDate}
-                checkOutDate={booking.checkOutDate}
-                totalPrice={booking.totalPrice}
+                booking={booking}
+                onCancel={() => cancelBooking(booking.id)}
               />
             ))
           ) : (
@@ -123,10 +122,9 @@ function ClientDashboard() {
             setIsModalOpen(true);
           }}
         >
-          Хочешь стать владельцем отеля?
+          хочешь стать владельцем отеля?
         </a>
       </footer>
-
       {isModalOpen && (
         <OwnershipApplicationModal onClose={() => setIsModalOpen(false)} />
       )}
@@ -135,6 +133,7 @@ function ClientDashboard() {
 }
 
 export default ClientDashboard;
+
 
 
 

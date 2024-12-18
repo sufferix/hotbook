@@ -1,7 +1,8 @@
   .main-content {
-    text-align: center;
-    /*flex-direction: column;*/
+    font-family: "Open Sans", sans-serif;
     padding: 20px;
+    max-width: 1200px;
+
   }
 
   h2 {

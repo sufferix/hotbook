@@ -1,5 +1,4 @@
 import React from "react";
-import "./search_button.css";
 
 function SearchButton({ onClick }) {
   return (

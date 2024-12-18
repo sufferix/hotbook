@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./AuthModal.css";
 
-axios.defaults.baseURL = "https://9023-2a09-bac1-61c0-8-00-388-a3.ngrok-free.app";
-
 function AuthModal({ onClose }) {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");

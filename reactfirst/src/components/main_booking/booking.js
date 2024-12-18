@@ -3,7 +3,6 @@ import CitySelector from "./city_selector";
 import DatePickerField from "./date_picker_field";
 import GuestCounter from "./guest_counter";
 import SearchButton from "./search_button";
-import "./booking.css";
 import { useNavigate } from "react-router-dom";
 
 function Booking() {
@@ -22,16 +21,7 @@ function Booking() {
     <div className="booking-container">
       <CitySelector city={city} setCity={setCity} />
       <div className="booking-options-row">
-        <DatePickerField
-          label="Заезд"
-          selectedDate={startDate}
-          setDate={setStartDate}
-        />
-        <DatePickerField
-          label="Выезд"
-          selectedDate={endDate}
-          setDate={setEndDate}
-        />
+        <DatePickerField/>
         <GuestCounter guests={guests} setGuests={setGuests} />
       </div>
       <SearchButton onClick={handleSearch} />

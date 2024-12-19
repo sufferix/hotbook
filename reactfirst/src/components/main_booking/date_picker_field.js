@@ -5,26 +5,20 @@ import { addDays, isBefore } from "date-fns";
 
 const DatePickerField = ({ onDateChange }) => {
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(addDays(new Date(), 2)); // Стартовое ограничение на 2 дня
+  const [endDate, setEndDate] = useState(addDays(new Date(), 2));
 
-  // Обновление начальной даты
   const handleStartDateChange = (date) => {
-    if (isBefore(date, new Date())) {
-      return; // Игнорируем даты в прошлом
-    }
+    if (isBefore(date, new Date())) return;
     setStartDate(date);
-    const minEndDate = addDays(date, 2); // Минимум два дня между датами
+    const minEndDate = addDays(date, 2);
     if (isBefore(endDate, minEndDate)) {
       setEndDate(minEndDate);
     }
     onDateChange(date, endDate);
   };
 
-  // Обновление конечной даты
   const handleEndDateChange = (date) => {
-    if (isBefore(date, addDays(startDate, 2))) {
-      return; // Минимум два дня бронирования
-    }
+    if (isBefore(date, addDays(startDate, 2))) return;
     setEndDate(date);
     onDateChange(startDate, date);
   };
@@ -37,8 +31,8 @@ const DatePickerField = ({ onDateChange }) => {
           selected={startDate}
           className="date-input"
           onChange={handleStartDateChange}
-          minDate={new Date()} // Ограничение на прошедшие дни
-          dateFormat="dd MMM yyyy" // Формат с годом
+          minDate={new Date()}
+          dateFormat="dd MMM yyyy"
         />
       </div>
       <div className="calendar-field">
@@ -47,7 +41,7 @@ const DatePickerField = ({ onDateChange }) => {
           selected={endDate}
           className="date-input"
           onChange={handleEndDateChange}
-          minDate={addDays(startDate, 2)} // Минимум два дня между датами
+          minDate={addDays(startDate, 2)}
           dateFormat="dd MMM yyyy"
         />
       </div>
@@ -56,4 +50,5 @@ const DatePickerField = ({ onDateChange }) => {
 };
 
 export default DatePickerField;
+
 

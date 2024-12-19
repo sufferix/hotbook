@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 function CitySelector({ city, setCity }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const cities = [
-    "Санкт-Петербург, Россия",
-    "Москва, Россия",
-    "Сочи, Россия",
-    "Казань, Россия",
-    "Новосибирск, Россия"
-  ];
+  const [cities, setCities] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get("/hotels/cities");
+        setCities(response.data.cities || []);
+      } catch (error) {
+        setErrorMessage("Ошибка загрузки городов");
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
 
@@ -23,10 +32,10 @@ function CitySelector({ city, setCity }) {
       <input
         type="text"
         className="city-input"
-        placeholder="Санкт-Петербург, Россия"
+        placeholder="Выберите город"
         value={city}
         onClick={toggleDropdown}
-        readOnly
+        readOnly={false}
       />
       {isDropdownOpen && (
         <div className="city-dropdown">
@@ -41,8 +50,10 @@ function CitySelector({ city, setCity }) {
           ))}
         </div>
       )}
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
     </div>
   );
 }
 
 export default CitySelector;
+

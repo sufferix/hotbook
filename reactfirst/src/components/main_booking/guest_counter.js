@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const GuestCounter = () => {
+const GuestCounter = ({ guests, setGuests }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
@@ -12,10 +12,29 @@ const GuestCounter = () => {
   };
 
   // Обработчики изменения количества
-  const incrementAdults = () => setAdults((prev) => prev + 1);
-  const decrementAdults = () => setAdults((prev) => (prev > 0 ? prev - 1 : 0));
-  const incrementChildren = () => setChildren((prev) => prev + 1);
-  const decrementChildren = () => setChildren((prev) => (prev > 0 ? prev - 1 : 0));
+  const incrementAdults = () => {
+    setAdults((prev) => prev + 1);
+    setGuests(adults + 1 + children);
+  };
+
+  const decrementAdults = () => {
+    if (adults > 0) {
+      setAdults((prev) => prev - 1);
+      setGuests(adults - 1 + children);
+    }
+  };
+
+  const incrementChildren = () => {
+    setChildren((prev) => prev + 1);
+    setGuests(adults + children + 1);
+  };
+
+  const decrementChildren = () => {
+    if (children > 0) {
+      setChildren((prev) => prev - 1);
+      setGuests(adults + children - 1);
+    }
+  };
 
   return (
     <div className="guest-counter-container" ref={dropdownRef}>
@@ -51,4 +70,5 @@ const GuestCounter = () => {
 };
 
 export default GuestCounter;
+
 

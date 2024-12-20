@@ -23,7 +23,6 @@ public class ModelMapper {
         roomDTO.setId(room.getId());
         roomDTO.setRoomType(room.getRoomType());
         roomDTO.setRoomPrice(room.getRoomPrice());
-        roomDTO.setRoomDescription(room.getRoomDescription());
 
         if (room.getPhotos() != null) {
             List<PhotoDTO> photos = room.getPhotos().stream()
@@ -50,7 +49,6 @@ public class ModelMapper {
         room.setId(roomDTO.getId());
         room.setRoomType(roomDTO.getRoomType());
         room.setRoomPrice(roomDTO.getRoomPrice());
-        room.setRoomDescription(roomDTO.getRoomDescription());
         room.setAmenities(amenities);
         return room;
     }
@@ -65,8 +63,21 @@ public class ModelMapper {
         bookingDTO.setNumOfChildren(booking.getNumOfChildren());
         bookingDTO.setTotalNumOfGuest(booking.getTotalNumOfGuest());
         bookingDTO.setTotalCost(booking.getTotalCost());
+        bookingDTO.setFullName(booking.getFullName()); 
+
+        if (booking.getRoom() != null && booking.getRoom().getHotel() != null) {
+            Hotel hotel = booking.getRoom().getHotel();
+            bookingDTO.setHotelName(hotel.getName());
+
+            if (hotel.getPhotos() != null && !hotel.getPhotos().isEmpty()) {
+                bookingDTO.setHotelPhotoUrl(hotel.getPhotos().get(0).getPhotoUrl());
+            }
+        }
+
         return bookingDTO;
     }
+
+
 
     public static List<UserDTO> mapUserListEntityToUserListDTO(List<User> userList) {
         return userList.stream().map(ModelMapper::mapUserEntityToUserDTO).collect(Collectors.toList());
@@ -85,16 +96,25 @@ public class ModelMapper {
         hotelDTO.setId(hotel.getId());
         hotelDTO.setName(hotel.getName());
         hotelDTO.setCity(hotel.getCity());
+        hotelDTO.setAddress(hotel.getAddress());
         hotelDTO.setDescription(hotel.getDescription());
         hotelDTO.setStars(hotel.getStars());
+
+        List<String> photoUrls = hotel.getPhotos().stream()
+                .map(HotelPhoto::getPhotoUrl)
+                .collect(Collectors.toList());
+        hotelDTO.setPhotos(photoUrls);
+
         return hotelDTO;
     }
+
 
     public static HotelDetailDTO mapHotelToDetailDTO(Hotel hotel) {
         HotelDetailDTO dto = new HotelDetailDTO();
         dto.setId(hotel.getId());
         dto.setName(hotel.getName());
         dto.setCity(hotel.getCity());
+        dto.setAddress(hotel.getAddress()); // Добавлено
         dto.setDescription(hotel.getDescription());
         dto.setStars(hotel.getStars());
 
@@ -117,6 +137,7 @@ public class ModelMapper {
         dto.setPhotos(photos);
         return dto;
     }
+
     public static List<HotelDTO> mapHotelListEntityToHotelListDTO(List<Hotel> hotels) {
         return hotels.stream()
                 .map(ModelMapper::mapHotelEntityToHotelDTO)

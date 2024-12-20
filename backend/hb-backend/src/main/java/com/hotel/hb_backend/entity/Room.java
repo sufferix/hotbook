@@ -20,8 +20,6 @@ public class Room {
 
     private BigDecimal roomPrice;
 
-    private String roomDescription;
-
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
 
@@ -46,7 +44,7 @@ public class Room {
                 "id=" + id +
                 ", roomType='" + roomType + '\'' +
                 ", roomPrice=" + roomPrice +
-                ", roomDescription='" + roomDescription + '\'' +
                 '}';
     }
 }
+

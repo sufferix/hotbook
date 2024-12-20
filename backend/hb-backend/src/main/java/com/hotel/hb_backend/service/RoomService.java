@@ -107,7 +107,6 @@ public class RoomService implements IRoomService {
 
             room.setRoomType(roomDTO.getRoomType());
             room.setRoomPrice(roomDTO.getRoomPrice());
-            room.setRoomDescription(roomDTO.getRoomDescription());
             room.setAmenities(amenities);
 
             roomRepository.save(room);

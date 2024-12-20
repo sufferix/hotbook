@@ -52,6 +52,7 @@ public class BookingService implements IBookingService {
             booking.setCheckOutDate(bookingRequest.getCheckOutDate());
             booking.setNumOfAdults(bookingRequest.getNumOfAdults());
             booking.setNumOfChildren(bookingRequest.getNumOfChildren());
+            booking.setFullName(bookingRequest.getFullName());
 
             bookingRepository.save(booking);
 

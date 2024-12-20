@@ -20,5 +20,8 @@ public class BookingDTO {
     private BigDecimal totalCost;
     private UserDTO user;
     private RoomDTO room;
+    private String fullName;
+    private String hotelName;
+    private String hotelPhotoUrl;
 }
 

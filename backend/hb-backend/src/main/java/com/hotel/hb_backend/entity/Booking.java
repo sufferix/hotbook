@@ -1,6 +1,5 @@
 package com.hotel.hb_backend.entity;
 
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -27,10 +26,13 @@ public class Booking {
     @Min(value = 1, message = "Количество взрослых не должно быть меньше 1")
     private int numOfAdults;
 
-    @Min(value = 0)
+    @Min(value = 0, message = "Количество детей не может быть отрицательным")
     private int numOfChildren;
 
     private int totalNumOfGuest;
+
+    @NotNull(message = "Полное имя обязательно")
+    private String fullName; // Новое поле для полного имени
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -80,8 +82,8 @@ public class Booking {
                 ", numOfAdults=" + numOfAdults +
                 ", numOfChildren=" + numOfChildren +
                 ", totalNumOfGuest=" + totalNumOfGuest +
+                ", fullName='" + fullName + '\'' +
                 ", totalCost=" + totalCost +
                 '}';
     }
 }
-

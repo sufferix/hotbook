@@ -22,6 +22,9 @@ public class Hotel {
     @Column(nullable = false)
     private String city;
 
+    @Column(nullable = false)
+    private String address;
+
     private String description;
 
     @Column(nullable = false)
@@ -43,8 +46,10 @@ public class Hotel {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", city='" + city + '\'' +
+                ", address='" + address + '\'' +
                 ", description='" + description + '\'' +
                 ", stars=" + stars +
                 '}';
     }
 }
+

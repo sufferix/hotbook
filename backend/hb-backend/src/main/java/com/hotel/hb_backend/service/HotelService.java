@@ -128,6 +128,7 @@ public class HotelService implements IHotelService {
             Hotel hotel = new Hotel();
             hotel.setName(hotelDTO.getName());
             hotel.setCity(hotelDTO.getCity());
+            hotel.setAddress(hotelDTO.getAddress()); // Установить адрес
             hotel.setDescription(hotelDTO.getDescription());
             hotel.setStars(hotelDTO.getStars());
             hotel.setUser(user);
@@ -156,6 +157,7 @@ public class HotelService implements IHotelService {
 
             hotel.setName(hotelDTO.getName());
             hotel.setCity(hotelDTO.getCity());
+            hotel.setAddress(hotelDTO.getAddress()); // Установить новый адрес
             hotel.setDescription(hotelDTO.getDescription());
             hotel.setStars(hotelDTO.getStars());
 

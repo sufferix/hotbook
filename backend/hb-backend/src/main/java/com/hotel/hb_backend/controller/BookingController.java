@@ -45,7 +45,7 @@ public class BookingController {
     }
 
     // Отмена бронирования текущего пользователя
-    @DeleteMapping("/{bookingId}/cancel")
+    @DeleteMapping("/{bookingId}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<Response> cancelBooking(@PathVariable Long bookingId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

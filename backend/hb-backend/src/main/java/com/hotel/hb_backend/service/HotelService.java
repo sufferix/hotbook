@@ -187,15 +187,20 @@ public class HotelService implements IHotelService {
             List<Room> rooms = roomRepository.findByHotelId(hotelId);
             for (Room room : rooms) {
                 String roomFolderPath = "rooms/" + room.getId();
-                cloudinary.api().deleteResourcesByPrefix(roomFolderPath, ObjectUtils.emptyMap());
-                cloudinary.api().deleteFolder(roomFolderPath, ObjectUtils.emptyMap());
+                try {
+                    cloudinary.api().deleteResourcesByPrefix(roomFolderPath, ObjectUtils.emptyMap());
+                    cloudinary.api().deleteFolder(roomFolderPath, ObjectUtils.emptyMap());
+                } catch (Exception ignored) {
+                }
             }
-
             roomRepository.deleteAll(rooms);
 
             String hotelFolderPath = "hotels/" + hotelId;
-            cloudinary.api().deleteResourcesByPrefix(hotelFolderPath, ObjectUtils.emptyMap());
-            cloudinary.api().deleteFolder(hotelFolderPath, ObjectUtils.emptyMap());
+            try {
+                cloudinary.api().deleteResourcesByPrefix(hotelFolderPath, ObjectUtils.emptyMap());
+                cloudinary.api().deleteFolder(hotelFolderPath, ObjectUtils.emptyMap());
+            } catch (Exception ignored) {
+            }
 
             hotelRepository.delete(hotel);
 
@@ -210,8 +215,6 @@ public class HotelService implements IHotelService {
         }
         return response;
     }
-
-
 
     @Override
     public Response addHotelPhotos(Long hotelId, String email, List<MultipartFile> files) {

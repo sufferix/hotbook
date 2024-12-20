@@ -36,6 +36,8 @@ public class UserService implements IUserService {
     @Autowired
     private HotelRepository hotelRepository;
 
+    @Autowired
+    private HotelService hotelService;
     @Override
     public Response register(User user) {
         Response response = new Response();
@@ -129,9 +131,18 @@ public class UserService implements IUserService {
         try {
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new MessException("Пользователь с ID " + userId + " не найден"));
+
+            // Удаление всех связанных отелей
+            List<Hotel> hotels = hotelRepository.findByUser(user);
+            for (Hotel hotel : hotels) {
+                hotelService.deleteHotel(hotel.getId(), user.getEmail());
+            }
+
+            // Удаление пользователя
             userRepository.delete(user);
+
             response.setStatusCode(200);
-            response.setMessage("Пользователь успешно удален");
+            response.setMessage("Пользователь и все связанные данные успешно удалены");
         } catch (MessException e) {
             response.setStatusCode(404);
             response.setMessage(e.getMessage());
@@ -141,6 +152,8 @@ public class UserService implements IUserService {
         }
         return response;
     }
+
+
 
     @Override
     public Response getProfile(String email) {

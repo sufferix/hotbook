@@ -137,13 +137,17 @@ public class RoomService implements IRoomService {
             }
 
             String folderPath = "rooms/" + roomId;
-            cloudinary.api().deleteResourcesByPrefix(folderPath, ObjectUtils.emptyMap());
-            cloudinary.api().deleteFolder(folderPath, ObjectUtils.emptyMap());
+
+            try {
+                cloudinary.api().deleteResourcesByPrefix(folderPath, ObjectUtils.emptyMap());
+                cloudinary.api().deleteFolder(folderPath, ObjectUtils.emptyMap());
+            } catch (Exception ignored) {
+            }
 
             roomRepository.delete(room);
 
             response.setStatusCode(200);
-            response.setMessage("Номер и все фотографии успешно удалены");
+            response.setMessage("Номер и его фотографии успешно удалены");
         } catch (MessException e) {
             response.setStatusCode(403);
             response.setMessage(e.getMessage());
@@ -153,6 +157,7 @@ public class RoomService implements IRoomService {
         }
         return response;
     }
+
 
     @Override
     public Response addRoomPhotos(Long hotelId, Long roomId, String email, List<MultipartFile> files) {

@@ -10,21 +10,23 @@ import com.hotel.hb_backend.repository.RoomRepository;
 import com.hotel.hb_backend.repository.UserRepository;
 import com.hotel.hb_backend.dto.ModelMapper;
 import com.hotel.hb_backend.serviceinterface.IBookingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 //
 @Service
 public class BookingService implements IBookingService {
 
-    @Autowired
-    private BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
-    @Autowired
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public BookingService(BookingRepository bookingRepository, RoomRepository roomRepository, UserRepository userRepository) {
+        this.bookingRepository = bookingRepository;
+        this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public Response createBooking(Long hotelId, Long roomId, String email, Booking bookingRequest) {

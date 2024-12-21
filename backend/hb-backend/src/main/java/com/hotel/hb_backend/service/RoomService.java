@@ -15,7 +15,6 @@ import com.hotel.hb_backend.repository.RoomPhotoRepository;
 import com.hotel.hb_backend.serviceinterface.IRoomService;
 import com.hotel.hb_backend.repository.RoomRepository;
 import com.hotel.hb_backend.dto.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,17 +25,20 @@ import java.util.Map;
 @Service
 public class RoomService implements IRoomService {
 
-    @Autowired
-    private RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-    @Autowired
-    private HotelRepository hotelRepository;
-    @Autowired
-    private AmenityRepository amenityRepository;
-    @Autowired
-    private RoomPhotoRepository roomPhotoRepository;
-    @Autowired
-    private Cloudinary cloudinary;
+    private final HotelRepository hotelRepository;
+    private final AmenityRepository amenityRepository;
+    private final RoomPhotoRepository roomPhotoRepository;
+    private final Cloudinary cloudinary;
+
+    public RoomService(RoomRepository roomRepository, HotelRepository hotelRepository, AmenityRepository amenityRepository, RoomPhotoRepository roomPhotoRepository, Cloudinary cloudinary) {
+        this.roomRepository = roomRepository;
+        this.hotelRepository = hotelRepository;
+        this.amenityRepository = amenityRepository;
+        this.roomPhotoRepository = roomPhotoRepository;
+        this.cloudinary = cloudinary;
+    }
 
     @Override
     public Response getRoomsByHotelId(Long hotelId) {

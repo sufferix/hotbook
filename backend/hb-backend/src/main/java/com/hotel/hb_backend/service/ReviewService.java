@@ -11,7 +11,6 @@ import com.hotel.hb_backend.entity.Hotel;
 import com.hotel.hb_backend.entity.Review;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,14 +18,17 @@ import java.util.List;
 @Service
 public class ReviewService implements IReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private HotelRepository hotelRepository;
+    private final HotelRepository hotelRepository;
+
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, HotelRepository hotelRepository) {
+        this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+        this.hotelRepository = hotelRepository;
+    }
 
     public List<ReviewDTO> getReviewsForHotel(Long hotelId) {
         List<Review> reviews = reviewRepository.findByHotelId(hotelId);

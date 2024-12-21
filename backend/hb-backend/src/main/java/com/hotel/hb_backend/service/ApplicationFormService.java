@@ -10,7 +10,6 @@ import com.hotel.hb_backend.entity.ApplicationForm;
 import com.hotel.hb_backend.entity.Role;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.exception.MessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +17,14 @@ import java.util.List;
 @Service
 public class ApplicationFormService implements IApplicationService {
 
-    @Autowired
-    private ApplicationFormRepository applicationFormRepository;
+    private final ApplicationFormRepository applicationFormRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public ApplicationFormService(ApplicationFormRepository applicationFormRepository, UserRepository userRepository) {
+        this.applicationFormRepository = applicationFormRepository;
+        this.userRepository = userRepository;
+    }
 
     public Response submitApplicationForm(ApplicationFormDTO applicationFormDTO, String email) {
         Response response = new Response();

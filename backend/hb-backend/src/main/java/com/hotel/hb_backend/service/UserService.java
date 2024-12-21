@@ -9,7 +9,6 @@ import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.serviceinterface.IUserService;
 import com.hotel.hb_backend.repository.UserRepository;
 import com.hotel.hb_backend.dto.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,23 +20,27 @@ import java.util.List;
 @Service
 public class UserService implements IUserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private JwtTokenService jwtTokenService;
+    private final JwtTokenService jwtTokenService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private HotelRepository hotelRepository;
+    private final HotelRepository hotelRepository;
 
-    @Autowired
-    private HotelService hotelService;
+    private final HotelService hotelService;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenService jwtTokenService, AuthenticationManager authenticationManager, HotelRepository hotelRepository, HotelService hotelService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenService = jwtTokenService;
+        this.authenticationManager = authenticationManager;
+        this.hotelRepository = hotelRepository;
+        this.hotelService = hotelService;
+    }
+
     @Override
     public Response register(User user) {
         Response response = new Response();

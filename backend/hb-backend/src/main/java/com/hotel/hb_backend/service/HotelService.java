@@ -16,7 +16,6 @@ import com.hotel.hb_backend.exception.MessException;
 import com.hotel.hb_backend.repository.HotelRepository;
 import com.hotel.hb_backend.serviceinterface.IHotelService;
 import com.hotel.hb_backend.dto.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,16 +26,19 @@ import java.util.Map;
 @Service
 public class HotelService implements IHotelService {
 
-    @Autowired
-    private HotelRepository hotelRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private HotelPhotoRepository hotelPhotoRepository;
-    @Autowired
-    private RoomRepository roomRepository;
-    @Autowired
-    private Cloudinary cloudinary;
+    private final HotelRepository hotelRepository;
+    private final UserRepository userRepository;
+    private final HotelPhotoRepository hotelPhotoRepository;
+    private final RoomRepository roomRepository;
+    private final Cloudinary cloudinary;
+
+    public HotelService(HotelRepository hotelRepository, UserRepository userRepository, HotelPhotoRepository hotelPhotoRepository, RoomRepository roomRepository, Cloudinary cloudinary) {
+        this.hotelRepository = hotelRepository;
+        this.userRepository = userRepository;
+        this.hotelPhotoRepository = hotelPhotoRepository;
+        this.roomRepository = roomRepository;
+        this.cloudinary = cloudinary;
+    }
 
     @Override
     public Response getAllCities() {

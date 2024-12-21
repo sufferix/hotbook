@@ -1,7 +1,6 @@
 package com.hotel.hb_backend.security;
 
 import com.hotel.hb_backend.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,10 +24,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsServiceImpl;
-    @Autowired
-    private JWTAuthFilter jwtAuthFilter;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final JWTAuthFilter jwtAuthFilter;
+
+    public SecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl, JWTAuthFilter jwtAuthFilter) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {

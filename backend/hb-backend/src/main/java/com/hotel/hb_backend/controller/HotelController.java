@@ -3,7 +3,6 @@ package com.hotel.hb_backend.controller;
 import com.hotel.hb_backend.serviceinterface.IHotelService;
 import com.hotel.hb_backend.dto.HotelDTO;
 import com.hotel.hb_backend.dto.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,8 +17,11 @@ import java.util.List;
 @RequestMapping("/hotels")
 public class HotelController {
 
-    @Autowired
-    private IHotelService hotelService;
+    private final IHotelService hotelService;
+
+    public HotelController(IHotelService hotelService) {
+        this.hotelService = hotelService;
+    }
 
     @GetMapping("/cities")
     public ResponseEntity<Response> getAllCities() {

@@ -3,7 +3,6 @@ package com.hotel.hb_backend.controller;
 import com.hotel.hb_backend.serviceinterface.IRoomService;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.dto.RoomDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -17,8 +16,11 @@ import java.util.List;
 @RequestMapping("/hotels/{hotelId}/rooms")
 public class RoomController {
 
-    @Autowired
-    private IRoomService roomService;
+    private final IRoomService roomService;
+
+    public RoomController(IRoomService roomService) {
+        this.roomService = roomService;
+    }
 
     // Получение всех номеров конкретного отеля (доступно для всех)
     @GetMapping

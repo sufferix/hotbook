@@ -4,7 +4,6 @@ package com.hotel.hb_backend.controller;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.serviceinterface.IUserService;
 import com.hotel.hb_backend.dto.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,8 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
+
+    public UserController(IUserService userService) {
+        this.userService = userService;
+    }
 
     // Получение всех пользователей (только для администратора)
     @GetMapping

@@ -63,7 +63,7 @@ public class ModelMapper {
         bookingDTO.setNumOfChildren(booking.getNumOfChildren());
         bookingDTO.setTotalNumOfGuest(booking.getTotalNumOfGuest());
         bookingDTO.setTotalCost(booking.getTotalCost());
-        bookingDTO.setFullName(booking.getFullName()); 
+        bookingDTO.setFullName(booking.getFullName());
 
         if (booking.getRoom() != null && booking.getRoom().getHotel() != null) {
             Hotel hotel = booking.getRoom().getHotel();

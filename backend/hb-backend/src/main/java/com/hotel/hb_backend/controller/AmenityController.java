@@ -12,8 +12,11 @@ import java.util.List;
 @RequestMapping("/amenities")
 public class AmenityController {
 
-    @Autowired
-    private IAmenityService amenityService;
+    private final IAmenityService amenityService;
+
+    public AmenityController(IAmenityService amenityService) {
+        this.amenityService = amenityService;
+    }
 
     // Получение списка всех удобств
     @GetMapping

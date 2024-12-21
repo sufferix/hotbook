@@ -3,7 +3,6 @@ package com.hotel.hb_backend.controller;
 import com.hotel.hb_backend.serviceinterface.IApplicationService;
 import com.hotel.hb_backend.dto.ApplicationFormDTO;
 import com.hotel.hb_backend.dto.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/applications")
 public class ApplicationFormController {
 
-    @Autowired
-    private IApplicationService applicationFormService;
+    private final IApplicationService applicationFormService;
+
+    public ApplicationFormController(IApplicationService applicationFormService) {
+        this.applicationFormService = applicationFormService;
+    }
 
     //Пользователь отправляет анкету
     @PostMapping("/submit")

@@ -5,7 +5,6 @@ import com.hotel.hb_backend.dto.LoginRequest;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.entity.User;
 import com.hotel.hb_backend.serviceinterface.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private IUserService userService;
+    private final IUserService userService;
+
+    public AuthController(IUserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<Response> register(@RequestBody User user) {

@@ -4,7 +4,6 @@ package com.hotel.hb_backend.controller;
 import com.hotel.hb_backend.dto.Response;
 import com.hotel.hb_backend.entity.Booking;
 import com.hotel.hb_backend.serviceinterface.IBookingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -15,8 +14,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bookings")
 public class BookingController {
 
-    @Autowired
-    private IBookingService bookingService;
+    private final IBookingService bookingService;
+
+    public BookingController(IBookingService bookingService) {
+        this.bookingService = bookingService;
+    }
 
     // Создание бронирования
     @PostMapping("/hotels/{hotelId}/rooms/{roomId}/book")

@@ -1,6 +1,9 @@
 package com.hotel.hb_backend.dto;
 
 import com.hotel.hb_backend.entity.*;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,6 +68,10 @@ public class ModelMapper {
         bookingDTO.setTotalCost(booking.getTotalCost());
         bookingDTO.setFullName(booking.getFullName());
 
+        if (booking.getRoom() != null) {
+            bookingDTO.setRoomType(booking.getRoom().getRoomType());
+        }
+
         if (booking.getRoom() != null && booking.getRoom().getHotel() != null) {
             Hotel hotel = booking.getRoom().getHotel();
             bookingDTO.setHotelName(hotel.getName());
@@ -91,6 +98,7 @@ public class ModelMapper {
         return bookingList.stream().map(ModelMapper::mapBookingEntityToBookingDTO).collect(Collectors.toList());
     }
 
+
     public static HotelDTO mapHotelEntityToHotelDTO(Hotel hotel) {
         HotelDTO hotelDTO = new HotelDTO();
         hotelDTO.setId(hotel.getId());
@@ -105,8 +113,24 @@ public class ModelMapper {
                 .collect(Collectors.toList());
         hotelDTO.setPhotos(photoUrls);
 
+        // Вычисление среднего рейтинга
+        double averageRating = 0.0; // Значение по умолчанию
+        if (hotel.getReviews() != null && !hotel.getReviews().isEmpty()) {
+            averageRating = hotel.getReviews().stream()
+                    .mapToDouble(Review::getRating)
+                    .average()
+                    .orElse(0.0);
+
+            // Округление до одной цифры после запятой
+            averageRating = BigDecimal.valueOf(averageRating)
+                    .setScale(1, RoundingMode.HALF_UP)
+                    .doubleValue();
+        }
+        hotelDTO.setAverageRating(averageRating);
+
         return hotelDTO;
     }
+
 
 
     public static HotelDetailDTO mapHotelToDetailDTO(Hotel hotel) {

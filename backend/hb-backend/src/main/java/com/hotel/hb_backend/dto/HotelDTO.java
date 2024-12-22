@@ -16,5 +16,8 @@ public class HotelDTO {
     private int stars;
     private List<RoomDTO> rooms;
     private List<String> photos;
+    private Double averageRating;
+    private Double pricePerNight;
+    private Double priceForPeriod;
 }
 

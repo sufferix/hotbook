@@ -23,5 +23,6 @@ public class BookingDTO {
     private String fullName;
     private String hotelName;
     private String hotelPhotoUrl;
+    private String roomType;
 }
 

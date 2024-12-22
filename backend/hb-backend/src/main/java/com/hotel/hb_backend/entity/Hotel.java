@@ -40,6 +40,9 @@ public class Hotel {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "hotel", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
     @Override
     public String toString() {
         return "Hotel{" +

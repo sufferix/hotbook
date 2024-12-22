@@ -14,4 +14,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long>, JpaSpecific
     @Query("SELECT DISTINCT h.city FROM Hotel h")
     List<String> findAllDistinctCities();
     List<Hotel> findByUser(User user);
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.hotel.id = :hotelId")
+    Double findAverageRatingByHotelId(@Param("hotelId") Long hotelId);
 }

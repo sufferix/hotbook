@@ -19,9 +19,12 @@ import com.hotel.hb_backend.dto.ModelMapper;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class HotelService implements IHotelService {
@@ -103,8 +106,9 @@ public class HotelService implements IHotelService {
             Hotel hotel = hotelRepository.findById(hotelId)
                     .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
 
+            // Если amenities пусты или null, передаем null
             List<Room> availableRooms = roomRepository.findAvailableRoomsByHotelIdAndFilters(
-                    hotelId, checkInDate, checkOutDate, amenities);
+                    hotelId, checkInDate, checkOutDate, (amenities == null || amenities.isEmpty()) ? null : amenities);
 
             HotelDetailDTO hotelDetailDTO = ModelMapper.mapHotelToDetailDTO(hotel);
             hotelDetailDTO.setRooms(ModelMapper.mapRoomListEntityToRoomListDTO(availableRooms));
@@ -119,6 +123,7 @@ public class HotelService implements IHotelService {
 
         return response;
     }
+
 
     @Override
     public Response addHotel(HotelDTO hotelDTO, String email) {
@@ -308,7 +313,30 @@ public class HotelService implements IHotelService {
 
             List<Hotel> filteredHotels = hotelRepository.findAll(specification);
 
-            List<HotelDTO> hotelDTOs = ModelMapper.mapHotelListEntityToHotelListDTO(filteredHotels);
+            List<Hotel> hotelsWithAvailableRooms = filteredHotels.stream()
+                    .filter(hotel -> roomRepository.hasAvailableRooms(
+                            hotel.getId(), checkInDate, checkOutDate))
+                    .collect(Collectors.toList());
+
+            List<HotelDTO> hotelDTOs = hotelsWithAvailableRooms.stream()
+                    .map(hotel -> {
+                        HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(hotel);
+
+                        List<Room> availableRooms = roomRepository.findAvailableRoomsByHotelIdAndFilters(
+                                hotel.getId(), checkInDate, checkOutDate, (amenities == null || amenities.isEmpty()) ? null : amenities);
+
+                        if (!availableRooms.isEmpty()) {
+                            Room firstRoom = availableRooms.get(0);
+
+                            hotelDTO.setPricePerNight(firstRoom.getRoomPrice().doubleValue());
+
+                            long days = checkInDate.until(checkOutDate).getDays();
+                            hotelDTO.setPriceForPeriod(firstRoom.getRoomPrice().multiply(BigDecimal.valueOf(days)).doubleValue());
+                        }
+
+                        return hotelDTO;
+                    })
+                    .collect(Collectors.toList());
 
             response.setStatusCode(200);
             response.setMessage("Фильтрованные отели успешно получены");

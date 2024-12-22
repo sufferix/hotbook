@@ -10,19 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-
-    @Query("SELECT DISTINCT r.roomType FROM Room r")
-    List<String> findDistinctRoomTypes();
-
-
-    @Query("SELECT r FROM Room r WHERE r.roomType LIKE %:roomType% AND r.id NOT IN (SELECT bk.room.id FROM Booking bk WHERE" +
-            "(bk.checkInDate <= :checkOutDate) AND (bk.checkOutDate >= :checkInDate))")
-    List<Room> findAvailableRoomsByDatesAndTypes(LocalDate checkInDate, LocalDate checkOutDate, String roomType);
-
-
-    @Query("SELECT r FROM Room r WHERE r.id NOT IN (SELECT b.room.id FROM Booking b)")
-    List<Room> getAllAvailableRooms();
-
     List<Room> findByHotelId(Long hotelId);
     Optional<Room> findByIdAndHotelId(Long roomId, Long hotelId);
 
@@ -38,5 +25,15 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             @Param("checkIn") LocalDate checkInDate,
             @Param("checkOut") LocalDate checkOutDate,
             @Param("amenityIds") List<Long> amenityIds);
+
+
+    @Query("SELECT COUNT(r) > 0 FROM Room r " +
+            "WHERE r.hotel.id = :hotelId " +
+            "AND r.id NOT IN (SELECT b.room.id FROM Booking b " +
+            "WHERE b.checkInDate <= :checkOutDate AND b.checkOutDate >= :checkInDate)")
+    boolean hasAvailableRooms(@Param("hotelId") Long hotelId,
+                              @Param("checkInDate") LocalDate checkInDate,
+                              @Param("checkOutDate") LocalDate checkOutDate);
+
 
 }

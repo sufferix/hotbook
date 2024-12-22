@@ -29,4 +29,7 @@ public class Response {
     private ApplicationFormDTO applicationForm;
     private List<ApplicationFormDTO> applicationFormList;
     private List<String> cities;
+    private Double averageRating;
+    private Double pricePerNight;
+    private Double priceForPeriod;
 }

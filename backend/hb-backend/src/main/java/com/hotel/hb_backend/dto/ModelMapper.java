@@ -32,7 +32,7 @@ public class ModelMapper {
                     .map(photo -> {
                         PhotoDTO photoDTO = new PhotoDTO();
                         photoDTO.setId(photo.getId());
-                        photoDTO.setUrl("/rooms/" + room.getId() + "/photos/" + photo.getPhotoUrl());
+                        photoDTO.setUrl(photo.getPhotoUrl());
                         return photoDTO;
                     })
                     .collect(Collectors.toList());

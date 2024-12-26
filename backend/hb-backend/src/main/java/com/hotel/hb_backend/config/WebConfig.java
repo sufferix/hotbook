@@ -17,7 +17,7 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*")
-                        .allowedOrigins("*");
+                        .allowedOrigins("https://hotbook.netlify.app");
             }
         };
     }

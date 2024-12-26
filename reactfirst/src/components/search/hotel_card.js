@@ -1,67 +1,64 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const HotelCard = ({ hotel }) => {
+const formatDate = (date) => {
+  if (!date) return "";
+  return date.toISOString().split("T")[0];
+};
+
+const formatAmenities = (amenities) => {
+  if (!amenities || amenities.length === 0) return "";
+  return amenities.join(",");
+};
+
+const HotelCard = ({ hotel, city, checkInDate, checkOutDate, amenities, numOfAdults, numOfChildren }) => {
   const getRatingColor = (rating) => {
-    if (rating >= 4) return "#39e07b"; // Зеленый для высоких оценок
-    if (rating >= 3) return "#ffdd57"; // Желтый для средних оценок
-    return "#ff6f61"; // Красный для низких оценок
+    if (!rating) return "#ccc"; 
+    if (rating >= 4) return "#39e07b";
+    if (rating >= 3) return "#ffdd57";
+    return "#ff6f61";
   };
 
+  const handleLinkClick = () => {
+  };
+
+  const hotelImage = hotel.photos?.length > 0 ? hotel.photos[0] : null;
+
   return (
-    <Link to={`/info`} className="hotel-card-link">   {/* ${hotel.id}*/}
+    <Link
+      to={{
+        pathname: `/hotels/${hotel.id}`,
+        search: `?city=${encodeURIComponent(city)}&checkInDate=${formatDate(checkInDate)}&checkOutDate=${formatDate(checkOutDate)}&amenities=${formatAmenities(amenities)}&numOfAdults=${numOfAdults}&numOfChildren=${numOfChildren}`,
+        state: { numOfAdults, numOfChildren }, 
+      }}
+      className="hotel-card-link"
+      onClick={handleLinkClick}
+    >
       <div className="hotel-card">
-          {/* Заполнитель для фото */} 
-          <div className="hotel-image">
-            {hotel?.image ? (
-              <img src={hotel.image} alt={hotel.name || "Отель"} />
-            ) : (
-              <div className="placeholder-image">Фото</div>
-            )}
+        <div className="hotel-image">
+          {hotelImage ? <img src={hotelImage} alt={hotel.name} /> : <div className="placeholder">Нет фото</div>}
+        </div>
+        <div className="hotel-content">
+          <h3 className="hotel-name">{hotel.name}</h3>
+          <div className="hotel-tags">
+            {hotel.tags?.map((tag, index) => (
+              <span key={index} className="hotel-tag">{tag}</span>
+            ))}
           </div>
-
-          {/* Метаданные отеля */}
-          <div class="hotel-content">
-            <h3 className="hotel-name">{hotel?.name || "Неизвестный отель"}</h3>
-            <div className="hotel-tags">
-              {hotel?.tags?.map((tag, index) => (
-                <span key={index} className="hotel-tag">{tag}</span>
-              ))}
-            </div>
-            <div className="hotel-details">
-              <div className="hotel-rating">
-                <span className="rating-label">Рейтинг:</span>
-                <span
-                  className="rating-value"
-                  style={{ backgroundColor: getRatingColor(hotel?.rating || 0) }}
-                >
-                  {hotel?.rating || "N/A"}
-                </span>
-              </div>
-              <div class="filters-section">
-                <div class="filters-container">
-                  <span class="no-filters-message">Фильтры временно недоступны</span>
-                </div>
-              </div>
-              
-              <div class="hotel-rating">
-                <div className="hotel-stars">
-                  {Array(hotel?.stars || 0).fill("★").map((star, index) => (
-                    <span key={index} className="star">{star}</span>
-                  ))} {hotel?.stars || 0} звезды
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Цены */}
-          <div className="hotel-price">
-            <div className="total-price">{hotel?.totalPrice?.toLocaleString() || 0} ₽</div>
-            <div className="price-per-night">{hotel?.pricePerNight?.toLocaleString() || 0} ₽ за ночь</div>
+          <div className="hotel-rating">
+            <span className="hotel-stars">{Array(hotel.stars).fill("★").join("")}</span>
+            <span className="rating-value" style={{ backgroundColor: getRatingColor(hotel.averageRating) }}>
+              {hotel.averageRating || "N/A"}
+            </span>
           </div>
         </div>
-      </Link>
-      );
+        <div className="hotel-price">
+          <div className="total-price">{hotel.priceForPeriod} ₽</div>
+          <div className="price-per-night">{hotel.pricePerNight} ₽ за ночь</div>
+        </div>
+      </div>
+    </Link>
+  );
 };
 
 export default HotelCard;

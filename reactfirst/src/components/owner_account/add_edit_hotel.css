@@ -1,0 +1,208 @@
+.add-edit-hotel {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-edit-hotel h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    color: #344e61;
+  }
+  
+  .section {
+    margin-bottom: 30px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #344e61;
+    text-align: left;
+    border-bottom: 2px solid #344e61;
+    padding-bottom: 5px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #344e61;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="number"],
+  .form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .form-group input[type="file"] {
+    padding: 5px 0;
+  }
+  
+  .amenities-checkboxes {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  .amenities-checkboxes label {
+    font-weight: normal;
+  }
+  
+  .photo-previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .preview-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .existing-photo {
+    position: relative;
+  }
+  
+  .remove-photo-button {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(220, 53, 69, 0.8);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 18px;
+  }
+  
+  .remove-photo-button:hover {
+    background: rgba(220, 53, 69, 1);
+  }
+  
+  .room-cards-container {
+    margin: 20px 0;
+  }
+  
+  .room-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 200px;
+    flex: 0 0 auto;
+    text-align: center;
+    position: relative;
+  }
+  
+  .room-card .photo-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+  
+  .room-card .preview-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .edit-room-button {
+    background-color: #28a745;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .edit-room-button:hover {
+    background-color: #218838;
+  }
+  
+  .save-hotel-button {
+    align-self: center;
+    font-size: 1.2rem;
+    background-color: #007bff;
+  }
+  
+  .save-hotel-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-room-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-room-button:hover {
+    background-color: #218838;
+  }
+  
+  .remove-room-button {
+    background-color: #dc3545;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .remove-room-button:hover {
+    background-color: #c82333;
+  }
+  
+  .error-message {
+    color: red;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .room-card .remove-photo-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgba(220, 53, 69, 0.8);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 18px;
+  }
+  
+  .room-card .remove-photo-button:hover {
+    background: rgba(220, 53, 69, 1);
+  }
+  

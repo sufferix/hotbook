@@ -34,7 +34,6 @@ function AuthModal({ onClose }) {
             <input type="email" placeholder="E-mail" className="input-field" />
             <input type="password" placeholder="Пароль" className="input-field" />
             <div className="link-container">
-              <a href="#" className="forgot-link">Забыли пароль?</a>
               <button className="toggle-button" onClick={toggleForm}>Регистрация</button>
             </div>
             <button className="auth-button" onClick={handleLogin}>Войти</button>

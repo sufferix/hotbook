@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loadUserProfile, saveUserProfile } from "../../redux/slices/userSlice";
+import { loadBookings, cancelBooking } from "../../redux/slices/bookingSlice";
 import ProfileEditForm from "../../components/account/profile_edit_form";
 import BookingInfo from "../../components/account/booking_info_acc";
 import NoBooking from "../../components/account/no_booking";
@@ -7,64 +10,63 @@ import LogoutButton from "../../components/account/logout_button";
 import OwnershipApplicationModal from "../../components/ownership/ownership_modal";
 import "./client_dashboard.css";
 
-function ClientDashboard() {
-  const [profile, setProfile] = useState(null);
+const ClientDashboard = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { profile, status, error } = useSelector((state) => state.user || {});
+  const { list: bookings, status: bookingStatus, error: bookingError } = useSelector((state) => state.bookings);
+
   const [editing, setEditing] = useState(false);
-  const [bookings, setBookings] = useState([]);
-  const [hasBooking, setHasBooking] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    loadProfile();
-    loadBookings();
-  }, []);
+    dispatch(loadUserProfile());
+    dispatch(loadBookings());
+  }, [dispatch]);
 
-  const loadProfile = async () => {
-    try {
-      const response = await axios.get("/users/profile");
-      setProfile(response.data.user);
-    } catch (error) {
-      setErrorMessage("Ошибка загрузки профиля");
+  useEffect(() => {
+    if (status === "succeeded" && profile) {
+      const role = profile.role;
+      switch (role) {
+        case "ADMIN":
+          navigate("/admin-dashboard");
+          break;
+        case "HOTELIER":
+          navigate("/owner-dashboard");
+          break;
+        case "USER":
+          break;
+        default:
+          navigate("/");
+      }
     }
-  };
+  }, [status, profile, navigate]);
 
-  const saveProfile = async (updatedProfile) => {
-    try {
-      const response = await axios.put("/users/profile", updatedProfile);
-      setProfile(response.data.user);
-      setEditing(false);
-    } catch (error) {
-      setErrorMessage("Ошибка сохранения профиля");
-    }
-  };
 
-  const loadBookings = async () => {
-    try {
-      const response = await axios.get("/bookings");
-      setBookings(response.data.bookings);
-      setHasBooking(response.data.bookings.length > 0);
-    } catch (error) {
-      setErrorMessage("Ошибка загрузки бронирований");
-    }
-  };
-
-  const cancelBooking = async (bookingId) => {
-    try {
-      await axios.delete(`/bookings/${bookingId}/cancel`);
-      loadBookings();
-    } catch (error) {
-      setErrorMessage("Ошибка отмены бронирования");
-    }
+  const handleSaveProfile = async (updatedProfile) => {
+    await dispatch(saveUserProfile(updatedProfile));
+    setEditing(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
-  if (!profile) {
-    return <p>Загрузка профиля...</p>;
+  const handleCancelBooking = (bookingId) => {
+    dispatch(cancelBooking(bookingId));
+  };
+
+  if (status === "loading" || bookingStatus === "loading") {
+    return <p>Загрузка...</p>;
+  }
+
+  if (status === "failed") {
+    return <p>Ошибка: {error}</p>;
+  }
+
+  if (bookingStatus === "failed") {
+    return <p>Ошибка загрузки бронирований: {bookingError}</p>;
   }
 
   return (
@@ -79,32 +81,39 @@ function ClientDashboard() {
           {!editing ? (
             <>
               <p className="user-name">
-                {profile.name} {profile.surname}
+                {(() => {
+                  const nameParts = [profile?.name, profile?.surname]
+                    .filter((part) => part && part.trim().toLowerCase() !== "null");
+                  return nameParts.length > 0 ? nameParts.join(" ") : "Аноним";
+                })()}
               </p>
-              <p className="user-email">{profile.email}</p>
-              <button className="edit-button" onClick={() => setEditing(true)}>
-                Редактировать профиль
-              </button>
+              <p className="user-email">{profile?.email}</p>
+              <button className="edit-button" onClick={() => setEditing(true)}>Редактировать профиль</button>
               <LogoutButton onLogout={handleLogout} />
             </>
           ) : (
-            <ProfileEditForm
-              initialData={profile}
-              onSave={saveProfile}
-            />
+            <ProfileEditForm initialData={profile} onSave={handleSaveProfile} />
           )}
         </div>
       </div>
 
       {!editing && (
         <>
-          <h2>Информация о бронировании</h2>
-          {hasBooking ? (
+          <h2>Мои бронирования</h2>
+          {bookings.length ? (
             bookings.map((booking) => (
               <BookingInfo
                 key={booking.id}
-                booking={booking}
-                onCancel={() => cancelBooking(booking.id)}
+                hotelName={booking.hotelName}
+                roomType={booking.roomType}
+                checkInDate={booking.checkInDate}
+                checkOutDate={booking.checkOutDate}
+                adults={booking.numOfAdults}
+                children={booking.numOfChildren}
+                imageUrl={booking.hotelPhotoUrl}
+                surname={booking.fullName}
+                price={booking.totalCost}
+                onCancel={() => handleCancelBooking(booking.id)}
               />
             ))
           ) : (
@@ -115,26 +124,20 @@ function ClientDashboard() {
 
       <footer className="dashboard-footer">
         <a
-          href="#"
+          href="/ownership-application"
           className="ownership-link"
           onClick={(e) => {
             e.preventDefault();
             setIsModalOpen(true);
           }}
         >
-          хочешь стать владельцем отеля?
+          Хочешь стать владельцем отеля?
         </a>
       </footer>
-      {isModalOpen && (
-        <OwnershipApplicationModal onClose={() => setIsModalOpen(false)} />
-      )}
+
+      {isModalOpen && <OwnershipApplicationModal onClose={() => setIsModalOpen(false)} />}
     </div>
   );
-}
+};
 
 export default ClientDashboard;
-
-
-
-
-

@@ -1,22 +1,35 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
+import React, { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCities } from "../../redux/slices/citySlice";
 function CitySelector({ city, setCity }) {
+  const dispatch = useDispatch();
+  const { list: cities, status, error } = useSelector((state) => state.city);
+  const dropdownRef = useRef(null);
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [cities, setCities] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const response = await axios.get("/hotels/cities");
-        setCities(response.data.cities || []);
-      } catch (error) {
-        setErrorMessage("Ошибка загрузки городов");
+    if (status === "idle") {
+      dispatch(fetchCities());
+    }
+  }, [status, dispatch]);
+
+  useEffect(() => {
+    if (status === "succeeded" && !cities.includes(city)) {
+      setCity("");
+    }
+  }, [cities, city, status, setCity]);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
       }
     };
-
-    fetchCities();
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
   }, []);
 
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
@@ -27,7 +40,7 @@ function CitySelector({ city, setCity }) {
   };
 
   return (
-    <div className="city-input-container">
+    <div className="city-input-container" ref={dropdownRef}>
       <label className="booking-label">Направление</label>
       <input
         type="text"
@@ -35,9 +48,8 @@ function CitySelector({ city, setCity }) {
         placeholder="Выберите город"
         value={city}
         onClick={toggleDropdown}
-        readOnly={false}
       />
-      {isDropdownOpen && (
+      {isDropdownOpen && status === "succeeded" && (
         <div className="city-dropdown">
           {cities.map((cityItem, index) => (
             <div
@@ -50,10 +62,10 @@ function CitySelector({ city, setCity }) {
           ))}
         </div>
       )}
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {status === "loading" && <p className="loading-message">Загрузка городов...</p>}
+      {status === "failed" && <p className="error-message">{error}</p>}
     </div>
   );
 }
 
 export default CitySelector;
-

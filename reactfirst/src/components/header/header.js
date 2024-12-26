@@ -5,18 +5,31 @@ import hotbookLogo from "../../hotbook.svg";
 import "./header.css";
 
 function Header({ isAuthenticated, onUserIconClick }) {
+  const role = localStorage.getItem("role");
+
+  const getDashboardPath = () => {
+    switch (role) {
+      case "USER":
+        return "/client-dashboard";
+      case "HOTELIER":
+        return "/owner-dashboard";
+      case "ADMIN":
+        return "/admin-dashboard";
+      default:
+        return "/";
+    }
+  };
+
   return (
     <header className="header">
-      {/* Логотип с ссылкой на главную страницу */}
       <div className="logo-container">
         <Link to="/">
           <img src={hotbookLogo} alt="HotBook Logo" className="logo" />
         </Link>
       </div>
 
-      {/* Иконка пользователя */}
       {isAuthenticated ? (
-        <Link to="/dashboard/client" className="user-icon">
+        <Link to={getDashboardPath()} className="user-icon">
           <FaUserCircle />
         </Link>
       ) : (

@@ -1,173 +1,161 @@
 .hotel-owner-dashboard {
-    padding: 20px;
-    font-family: 'Open Sans', sans-serif;
-    max-width: 1200px; /* Ограничиваем ширину страницы */
-    margin: 0 auto; /* Центрируем страницу */
-    padding: 20px 20px; /* Задаем одинаковые отступы слева и справа */
-  }
-  
-  .dashboard-header h1 {
-    text-align: left;
-    font-size: 3rem;
-    color: rgb(38, 70, 83);
-  }
-  
-  h2 {
-    text-align: left;
-    font-size: 2rem;
-    color: rgb(38, 70, 83);
-    margin-bottom: 30px;
-  }
-  
-  .profile-section {
-    display: flex;
-    gap: 60px;
-    margin-bottom: 50px;
-  }
-  
-  .avatar-placeholder {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background-color: #ddd;
-  }
-  
-  .owner-name {
-    font-size: 2rem;
-    font-weight: normal;
-    color: #344e61;
-    margin: 0 0 5px 0;
-  }
-  
-  .owner-role {
-    font-size: 1rem;
-    color: #666;
-    margin: 0 0 10px 0;
-  }
-  
-  .edit-profile-button {
-    background-color: #344e61;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .edit-profile-button:hover {
-    background-color: #2a3c4f;
-  }
-  
-  .hotel-section {
-    margin-top: 30px;
-  }
-  
-  .hotel-card {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .hotel-image-placeholder {
-    width: 150px;
-    height: 100px;
-    background-color: #ddd;
-    border-radius: 5px;
-  }
-  
-  .hotel-info {
-    flex: 1;
-  }
-  
-  .hotel-name {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 0 5px 0;
-  }
-  
-  .hotel-address {
-    font-size: 1rem;
-    color: #666;
-    margin: 0 0 10px 0;
-  }
-  
-  .hotel-stars {
-    font-size: 1.2rem;
-    color: gold;
-  }
-  
-  .edit-hotel-button {
-    background-color: #344e61;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .edit-hotel-button:hover {
-    background-color: #2a3c4f;
-  }
-  
-  /* Форма редактирования */
-  .profile-edit-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .profile-edit-form h2 {
-    font-size: 1.5rem;
-    color: #344e61;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .form-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-  
-  input {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .save-button {
-    background-color: #344e61;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    width: 100%;
-  }
-  
-  .save-button:hover {
-    background-color: #2a3c4f;
-  }
+  padding: 20px;
+  font-family: 'Open Sans', sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 20px;
+}
 
-  
+.dashboard-header h1 {
+  text-align: left;
+  font-size: 3rem;
+  color: rgb(38, 70, 83);
+}
+
+h2 {
+  text-align: left;
+  font-size: 2rem;
+  color: rgb(38, 70, 83);
+  margin-bottom: 30px;
+}
+
+.profile-section {
+  display: flex;
+  gap: 60px;
+  margin-bottom: 50px;
+}
+
+.avatar-placeholder {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: #ddd;
+}
+
+.owner-name {
+  font-size: 2rem;
+  font-weight: normal;
+  color: #344e61;
+  margin: 0 0 5px 0;
+}
+
+.owner-role {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 10px 0;
+}
+.edit-profile-button,
+.add-hotel-button {
+  background-color: #344e61;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-profile-button:hover,
+.add-hotel-button:hover {
+  background-color: #2a3c4f;
+}
+
+.hotel-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hotel-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.hotel-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hotel-owner-dashboard .hotel-image {
+  width: 200px;
+  height: 150px;
+  background-color: #ddd;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hotel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hotel-owner-dashboard .hotel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.hotel-owner-dashboard .hotel-name {
+  font-size: 1.7rem;
+  color:#344e61;
+  font-weight: bold;
+  margin: 0;
+}
+
+.hotel-address {
+  font-size: 1rem;
+  font-style: italic;
+  color: #666;
+}
+
+.hotel-owner-dashboard .hotel-stars {
+  font-size: 2rem;
+  color: #ffdd57;
+}
+
+
+.hotel-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 15px;
+}
+
+.edit-button,
+.delete-button {
+  padding: 6px 12px;
+  margin-bottom: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #344e61;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #2a3c4f;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}

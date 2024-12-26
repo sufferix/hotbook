@@ -1,34 +1,54 @@
-  .main-content {
-    font-family: "Open Sans", sans-serif;
-    padding: 20px;
-    max-width: 1200px;
+.main-content {
+  font-family: "Open Sans", sans-serif;
+  padding: 20px;
+  max-width: 1200px;
+}
 
-  }
+h2 {
+  font-family: "Open Sans", sans-serif;
+  text-align: center;
+  margin-top: 20px;
+  color: rgba(38, 70, 83, 1);
+}
 
-  h2 {
-    font-family: "Open Sans", sans-serif;
-    text-align: center;
-    margin-top: 20px;
-    color: rgba(38, 70, 83, 1);
-  }
+.route-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.route {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.route img,
+.route .placeholder {
+  width: 15  0px;
+  height: 100px;
+  object-fit: cover;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  color: #666;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.route p {
+  margin-top: 10px;
+  text-align: center;
+  font-family: "Open Sans", sans-serif;
+  color: #333;
+}
+
+
   
-  .route-grid {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
-    margin-left: 90px; /* потом убрать */
-  }
-  
-  .route {
-    text-align: center;
-    width: 150px;
-  }
-  
-  .route img {
-    width: 100%;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
   

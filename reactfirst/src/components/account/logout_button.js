@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import "./logout_button.css"; // Подключаем стили для кнопки
+import "./logout_button.css";
 
 const LogoutButton = ({ onLogout }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    onLogout(); // Выполняем функцию выхода
-    navigate("/"); // Перенаправляем на главную страницу
+    onLogout();
+    navigate("/");
   };
 
   return (

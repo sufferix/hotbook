@@ -1,27 +1,14 @@
 import React from "react";
 
-const Filters = ({ filters, handleFilterClick }) => {
-  const filterOptions = [
-    "Можно с животными",
-    "Завтрак включен",
-    "5*",
-    "Близко к центру",
-    "Высокий рейтинг",
-  ];
-
-  return (
-    <div className="filters">
-      {filterOptions.map((filter) => (
-        <button
-          key={filter}
-          className={`filter-button ${filters.includes(filter) ? "active" : ""}`}
-          onClick={() => handleFilterClick(filter)}
-        >
-          {filter}
-        </button>
-      ))}
-    </div>
-  );
-};
+const Filters = ({ filters, handleFilterClick }) => (
+  <div className="filters">
+    <button
+      className="filter-button all-filters"
+      onClick={handleFilterClick}
+    >
+      Фильтрация поиска
+    </button>
+  </div>
+);
 
 export default Filters;

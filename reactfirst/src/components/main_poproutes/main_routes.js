@@ -1,12 +1,13 @@
 import React from "react";
+import "./main_routes.css";
 
-
-function MainContent() {
+const MainRoutes = () => {
+  // Статичные данные для отображения направлений
   const routes = [
-    { name: "Стамбул, Турция", image: "istanbul.jpg" },
-    { name: "Пхукет, Таиланд", image: "phuket.jpg" },
-    { name: "Санкт-Петербург, Россия", image: "spb.jpg" },
-    { name: "Дубай, ОАЭ", image: "dubai.jpg" },
+    { name: "Москва", image: "moscow.jpg" },
+    { name: "Владивосток", image: "vladivostok.jpeg" },
+    { name: "Санкт-Петербург", image: "spb.jpg" },
+    { name: "Сочи", image: "sochi.jpg" },
   ];
 
   return (
@@ -14,13 +15,21 @@ function MainContent() {
       <div className="route-grid">
         {routes.map((route, index) => (
           <div key={index} className="route">
-            <img src={`${process.env.PUBLIC_URL}/images/${route.image}`} alt={route.name} />
+            {route.image ? (
+              <img
+                src={`${process.env.PUBLIC_URL}/images/${route.image}`}
+                alt={route.name}
+              />
+            ) : (
+              <div className="placeholder">Нет фото</div>
+            )}
             <p>{route.name}</p>
           </div>
         ))}
       </div>
     </div>
   );
-}
+};
 
-export default MainContent;
+export default MainRoutes;
+

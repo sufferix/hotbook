@@ -1,17 +1,22 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { sendApplication } from "../../redux/slices/ownershipSlice";
 import "./ownership_modal.css";
 
 const OwnershipApplicationModal = ({ onClose }) => {
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
-    phone: "",
-    hotelName: "",
+    phoneNumber: "",
     city: "",
     address: "",
+    hotelName: "",
   });
 
-  const handleInputChange = (e) => {
+  const dispatch = useDispatch();
+  const { status, error, message } = useSelector((state) => state.ownership);
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -21,70 +26,78 @@ const OwnershipApplicationModal = ({ onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Анкета отправлена:", formData);
-    // Здесь можно добавить отправку данных на сервер
-    onClose();
+
+    dispatch(sendApplication(formData));
   };
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-      <span className="close-button" onClick={onClose}>&times;</span>
-        <h2>Хочю.</h2>
-        <p>Чтобы стать владельцем, необходимо заполнить анкету и отправить её на модерацию.</p>
-        <form onSubmit={handleSubmit} className="application-form">
-          <input
-            type="text"
-            name="name"
-            placeholder="ФИО"
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Почта"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Телефон"
-            value={formData.phone}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="text"
-            name="hotelName"
-            placeholder="Название отеля"
-            value={formData.hotelName}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="text"
-            name="city"
-            placeholder="Город"
-            value={formData.city}
-            onChange={handleInputChange}
-            required
-          />
-          <input
-            type="text"
-            name="address"
-            placeholder="Адрес"
-            value={formData.address}
-            onChange={handleInputChange}
-            required
-          />
-          <button type="submit" className="submit-button">
-            Отправить
-          </button>
-        </form>
+        <span className="close-button" onClick={onClose}>
+          &times;
+        </span>
+        <h2>Анкета владельца отеля</h2>
+        {status === "succeeded" && <p className="success-message">{message}</p>}
+        {status === "failed" && <p className="error-message">{error}</p>}
+        {status !== "succeeded" && (
+          <form onSubmit={handleSubmit} className="application-form">
+            <input
+              type="text"
+              name="fullName"
+              placeholder="ФИО"
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Электронная почта"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="Телефон"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="city"
+              placeholder="Город"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="address"
+              placeholder="Адрес"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="hotelName"
+              placeholder="Название отеля"
+              value={formData.hotelName}
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="submit"
+              className="submit-button"
+              disabled={status === "loading"}
+            >
+              {status === "loading" ? "Отправка..." : "Отправить"}
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

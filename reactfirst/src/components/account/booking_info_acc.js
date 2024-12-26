@@ -1,22 +1,41 @@
 import React from "react";
 
-function BookingInfo() {
+function BookingInfo({
+  hotelName,
+  roomType,
+  checkInDate,
+  checkOutDate,
+  adults,
+  children,
+  imageUrl,
+  surname,
+  price,
+  onCancel,
+}) {
   return (
     <div className="booking-card">
-      <div className="hotel-image-placeholder"></div>
+      <div className="hotel-image-placeholder">
+        {imageUrl ? (
+          <img src={imageUrl} alt={`${hotelName}`} />
+        ) : (
+          <span>Нет фото</span>
+        )}
+      </div>
       <div className="booking-details">
-        <h3 className="hotel-name">Название отеля</h3>
-        <p className="room-category">Категория номера: Тяжелый люкс</p>
+        <h3 className="hotel-name">{hotelName}</h3>
+        <p className="room-category">Категория номера: {roomType}</p>
+        <p className="client-name">Бронировал: {surname}</p>
       </div>
       <div className="booking-meta">
-        <div className="date-info">
-          <span>📅</span> 20 окт. - 25 окт.
-        </div>
-        <div className="guests-info">
-          <span>👥</span> 2 взрослых
-        </div>
+        <div className="date-info">{checkInDate} - {checkOutDate}</div>
+        <div className="guests-info">{adults} взрослых, {children} детей</div>
       </div>
-      <button className="cancel-button">Отменить бронирование</button>
+      <div className="booking-price">
+        <p className="price">{price} ₽</p>
+        <button className="cancel-button" onClick={onCancel}>
+          Отменить бронирование
+        </button>
+      </div>
     </div>
   );
 }

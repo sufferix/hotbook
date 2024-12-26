@@ -1,4 +1,3 @@
-/* Общие стили страницы */
 .hotel-info-page {
   font-family: "Open Sans", sans-serif;
   background-color: #f9f9f9;
@@ -6,16 +5,23 @@
 }
 
 .page-container {
-  max-width: 1200px; /* Ограничиваем ширину страницы */
-  margin: 0 auto; /* Центрируем страницу */
-  padding: 20px 20px; /* Задаем одинаковые отступы слева и справа */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 20px;
 }
 
 .hotel-title {
-  text-align: center;
+  text-align: left;
   margin: 20px 0;
-  font-size: 2rem;
+  font-size: 3rem;
   color: #344e61;
+}
+
+.hotel-address {
+  text-align: left;
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .hotel-info-content {
@@ -33,15 +39,110 @@
 /* Слайдер */
 .image-slider {
   width: 100%;
-  max-width: 800px;
+  max-width: 1400px;
+  height: 500px;
   margin: 20px auto;
+  position: relative;
+  overflow: hidden;
 }
 
 .slide-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+
+.placeholder-slider {
+  width: 100%;
+  height: 100%;
+  background-color: #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #888;
+  border-radius: 10px;
+}
+
+.slick-dots {
+  position: absolute;
+  bottom: 10px;
+  display: flex !important;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.slick-arrow{
+  background-color: #344e61;
+  color: white;
+  position: absolute;
+  top: 35%;
+  height:30px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30%;
+  z-index: 5;
+}
+
+.slick-prev {
+  left: 10px;
+}
+
+.slick-next {
+  right: 10px;
+}
+
+.slick-arrow.slick-next:hover,
+.slick-arrow.slick-prev:hover
+{
+    background-color: #2a3c4f;
+    opacity:1;
+}
+
+
+.slick-prev::before,.slick-next::before{
+   display:none;
+    
+    }
+
+.arrows{
+  height:20px;
+  width:20px;
+  margin: 1px;
+
+}
+
+.room-slider-arrow {
+  background: none;
+  color: #344e61;
+  border: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.room-slider-arrow:hover {
+  color: white;
+}
+
+.room-slider-arrow.room-slider-prev {
+  left: 10px;
+}
+
+.room-slider-arrow.room-slider-next {
+  right: 10px;
 }
 
 /* Удобства */
@@ -64,9 +165,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  list-style: none; /* Убираем точки */
-  padding: 0; /* Убираем внутренний отступ списка */
-  margin: 0; /* Убираем внешний отступ списка */
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .amenity-item {
@@ -86,10 +187,13 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.description-text {
-  font-size: 1rem;
-  color: #333;
-  line-height: 1.5;
+.description-text { 
+  font-size: 1rem; 
+  color: #333; 
+  line-height: 1.5; 
+  width: 700px; 
+  overflow-wrap: break-word; 
+  text-align: left;  
 }
 
 /* Карточки номеров */
@@ -115,20 +219,34 @@
 
 .room-image {
   width: 100%;
-  height: 100px;
+  height: 150px;
   object-fit: cover;
   border-radius: 5px;
   margin-bottom: 10px;
 }
 
+.room-slider {
+  width: 100%;
+  height: 150px;
+}
+
+.room-placeholder {
+  width: 100%;
+  height: 150px;
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
 .room-category {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: bold;
+  color: #344e61;
+  text-align: center;
 }
 
 .room-price {
   color: #344e61;
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
@@ -153,31 +271,74 @@
 .reviews-list {
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Отступы между карточками отзывов */
+  gap: 15px;
 }
 
 .review-card {
   display: flex;
-  align-items: center; /* Выравниваем элементы по центру вертикали */
+  flex-direction: column;
+  align-items: baseline;
   background-color: #ffffff;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 100%; /* Растягиваем карточку */
+}
+
+.review-input {
+  width: 100%;
+  min-height: 100px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.rating-input {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 10px;
+  align-items: center;
+  font-weight: bold;
+}
+
+.star {
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.star.selected {
+  color: #ffdd57;
+}
+
+.add-review-button {
+  display: block;
+  background-color: #344e61;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.add-review-button:hover {
+  background-color: #2a3c4f;
 }
 
 .avatar {
-  width: 50px; /* Размер аватарки */
+  width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-right: 15px; /* Отступ справа от аватарки */
+  margin-right: 15px;
 }
 
 .review-content {
   display: flex;
-  flex-direction: row; /* Размещаем элементы в ряд */
-  align-items: center; /* Центрируем вертикально */
-  gap: 10px; /* Расстояние между элементами */
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 
 .review-name {
@@ -193,9 +354,29 @@
 }
 
 .review-text {
-  margin-top: 10px; /* Отступ сверху */
+  margin-top: 10px;
   font-size: 0.9rem;
   color: #333;
-  flex: 1; /* Занимает оставшееся пространство */
+  flex: 1;
 }
+
+.rating-input .star {
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.rating-input .star:hover,
+.rating-input .star.selected {
+  color: #ffdd57;
+}
+
+.review-rating .star {
+  cursor: default;
+  transition: none;
+}
+
+
+
 

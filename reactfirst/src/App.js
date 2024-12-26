@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate, Link } from "react-router-dom";
-//import { getUserRole } from "./hooks/user_role";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, } from "react-router-dom";
 import Header from "./components/header/header";
 import AuthModal from "./components/auth/AuthModal";
 import Home from "./pages/homepage/home";
@@ -11,52 +10,65 @@ import HotelOwnerDashboard from "./pages/owner_aсc/hotel_owner_dashboard";
 import AdminDashboard from "./pages/admin_acc/admin_dashboard";
 import BookingPage from "./pages/booking/booking_page";
 import BookingSuccess from "./pages/booking/booking_success";
+import AddHotel from './components/owner_account/AddHotel';
+import EditHotel from './components/owner_account/EditHotel';
 import "./App.css";
-import axios from "axios";
-
-// Использование переменной окружения
-axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const toggleLoginModal = () => setIsModalOpen(!isModalOpen);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
-  // Обработчик для успешного входа/регистрации
+  const toggleLoginModal = () => {
+    if (isAuthenticated) {
+      const role = localStorage.getItem("role");
+      switch (role) {
+        case "USER":
+          window.location.href = "/client-dashboard";
+          break;
+        case "HOTELIER":
+          window.location.href = "/owner-dashboard";
+          break;
+        case "ADMIN":
+          window.location.href = "/admin-dashboard";
+          break;
+        default:
+          console.error("Неизвестная роль пользователя");
+      }
+    } else {
+      setIsModalOpen(!isModalOpen);
+    }
+  };
+
   const handleLogin = () => {
-    setIsAuthenticated(true); // Устанавливаем состояние авторизации
-    setIsModalOpen(false); // Закрываем модальное окно
+    setIsAuthenticated(true);
+    setIsModalOpen(false);
   };
 
   return (
     <Router>
       <div className="App">
-        {/* Хедер с иконкой пользователя */}
-        <Header
-  isAuthenticated={isAuthenticated}
-  onUserIconClick={toggleLoginModal}
-/>
+        <Header isAuthenticated={isAuthenticated} onUserIconClick={toggleLoginModal} />
 
-        {/* Основные маршруты */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<HotelSearchPage />} />
-          <Route path="/info" element={<HotelInfoPage />} />
+          <Route path="/hotels/:id" element={<HotelInfoPage />} />
           <Route path="/client-dashboard" element={<ClientDashboard />} />
           <Route path="/owner-dashboard" element={<HotelOwnerDashboard />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
           <Route path="/booking" element={<BookingPage />} />
-          <Route path="/success" element={<BookingSuccess />} />
+          <Route path="/booking-success" element={<BookingSuccess />} />
+          <Route path="/edit-hotel/:id" element={<EditHotel />} /> 
+          <Route path="/add-hotel" element={<AddHotel />} />
         </Routes>
 
-        {/* Модальное окно авторизации */}
-        {isModalOpen && (
-          <AuthModal
-            onClose={() => setIsModalOpen(false)}
-            onLogin={handleLogin}
-          />
-        )}
+        {isModalOpen && <AuthModal onClose={() => setIsModalOpen(false)} onLogin={handleLogin} />}
       </div>
     </Router>
   );

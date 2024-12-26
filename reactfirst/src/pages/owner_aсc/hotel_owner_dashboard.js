@@ -1,66 +1,57 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { loadUserProfile, saveUserProfile } from "../../redux/slices/userSlice";
+import { fetchOwnerHotels, deleteOwnerHotel } from "../../redux/slices/ownerHotelSlice";
 import ProfileEditForm from "../../components/account/profile_edit_form";
 import LogoutButton from "../../components/account/logout_button";
+import OwnerHotelCard from "../../components/owner_account/owner_hotel_card";
+import { useNavigate } from 'react-router-dom';
 import "./hotel_owner_dashboard.css";
 
-axios.defaults.baseURL = "https://your-api-url.com";
+const HotelOwnerDashboard = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { profile, status: userStatus, error: userError } = useSelector((state) => state.user || {});
+  const { hotels, status: hotelsStatus, error: hotelsError } = useSelector((state) => state.ownerHotels);
 
-function HotelOwnerDashboard() {
-  const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [hotels, setHotels] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  // Загрузка профиля
   useEffect(() => {
-    loadProfile();
-  }, []);
+    dispatch(loadUserProfile());
+  }, [dispatch]);
 
-  const loadProfile = async () => {
-    try {
-      const response = await axios.get("/users/profile");
-      setProfile(response.data.user);
-    } catch (error) {
-      setErrorMessage("Ошибка загрузки профиля");
-    }
-  };
-
-  // Загрузка отелей владельца
   useEffect(() => {
-    loadHotels();
-  }, []);
-
-  const loadHotels = async () => {
-    try {
-      const response = await axios.get("/users/my-hotels");
-      setHotels(response.data.hotelList || []);
-    } catch (error) {
-      setErrorMessage("Ошибка загрузки отелей");
+    if (userStatus === "succeeded" && profile?.role === "HOTELIER") {
+      dispatch(fetchOwnerHotels());
     }
-  };
+  }, [userStatus, profile, dispatch]);
 
-  const saveProfile = async (updatedProfile) => {
-    try {
-      const response = await axios.put("/users/profile", updatedProfile);
-      setProfile(response.data.user);
-      setEditing(false);
-    } catch (error) {
-      setErrorMessage("Ошибка сохранения профиля");
-    }
-  };
-
-  const handleEditHotel = (hotelId) => {
-    console.log(`Редактирование отеля с ID ${hotelId}`);
+  const handleSaveProfile = async (updatedProfile) => {
+    await dispatch(saveUserProfile(updatedProfile));
+    setEditing(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
-  if (!profile) {
-    return <p>Загрузка профиля...</p>;
+  const handleDeleteHotel = (hotelId) => {
+    if (window.confirm("Вы уверены, что хотите удалить этот отель?")) {
+      dispatch(deleteOwnerHotel(hotelId));
+    }
+  };
+
+  if (userStatus === "loading" || hotelsStatus === "loading") {
+    return <p>Загрузка...</p>;
+  }
+
+  if (userStatus === "failed") {
+    return <p>Ошибка: {userError}</p>;
+  }
+
+  if (hotelsStatus === "failed") {
+    return <p>Ошибка загрузки отелей: {hotelsError}</p>;
   }
 
   return (
@@ -75,50 +66,48 @@ function HotelOwnerDashboard() {
           {!editing ? (
             <>
               <p className="owner-name">
-                {profile.name} {profile.surname}
+                {profile?.name} {profile?.surname}
               </p>
-              <p className="owner-role">владелец отеля</p>
-              <button className="edit-profile-button" onClick={() => setEditing(true)}>
+              <p className="owner-role">Владелец отеля</p>
+              <button
+                className="edit-profile-button"
+                onClick={() => setEditing(true)}
+              >
                 Редактировать профиль
               </button>
               <LogoutButton onLogout={handleLogout} />
             </>
           ) : (
-            <ProfileEditForm initialData={profile} onSave={saveProfile} />
+            <ProfileEditForm
+              initialData={profile}
+              onSave={handleSaveProfile}
+            />
           )}
         </div>
       </div>
 
       <div className="hotel-section">
-        <h2>Мои отели</h2>
-        {hotels.map((hotel) => (
-          <div key={hotel.id} className="hotel-card">
-            <div className="hotel-image-placeholder">Фото</div>
-            <div className="hotel-info">
-              <p className="hotel-name">{hotel.name}</p>
-              <p className="hotel-address">{hotel.city}</p>
-              <p className="hotel-stars">
-                {Array(hotel.stars)
-                  .fill("⭐")
-                  .join(" ")}
-              </p>
-            </div>
-            <button
-              className="edit-hotel-button"
-              onClick={() => handleEditHotel(hotel.id)}
-            >
-              Изменить
-            </button>
-          </div>
-        ))}
+        <div className="hotel-section-header">
+          <h2>Мои отели</h2>
+          <button className="add-hotel-button" onClick={() => navigate('/add-hotel')}>
+            Добавить отель
+          </button>
+        </div>
+        {hotels.length ? (
+          hotels.map((hotel) => (
+            <OwnerHotelCard
+              key={hotel.id}
+              hotel={hotel}
+              onEdit={() => navigate(`/edit-hotel/${hotel.id}`)}
+              onDelete={() => handleDeleteHotel(hotel.id)}
+            />
+          ))
+        ) : (
+          <p>У вас пока нет добавленных отелей.</p>
+        )}
       </div>
     </div>
   );
-}
+};
 
 export default HotelOwnerDashboard;
-
-
-
-
-

@@ -80,6 +80,10 @@
     text-decoration: underline;
   }
 
+  .toggle-button:hover {
+    color: white;
+    text-decoration-color: white; 
+}
   .header {
     display: flex;
     justify-content: space-between;

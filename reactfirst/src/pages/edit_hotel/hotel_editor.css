@@ -1,0 +1,52 @@
+.editable-input,
+.editable-textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.amenities-section button {
+  margin-right: 10px;
+  padding: 5px 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.amenities-section button.selected {
+  background-color: #39e07b;
+  color: white;
+  border-color: #39e07b;
+}
+
+.rooms-section {
+  margin-top: 20px;
+}
+
+.room-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.room-card input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #344e61;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #2a3c4f;
+}

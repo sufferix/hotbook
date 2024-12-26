@@ -106,9 +106,12 @@ public class HotelService implements IHotelService {
             Hotel hotel = hotelRepository.findById(hotelId)
                     .orElseThrow(() -> new MessException("Отель с ID " + hotelId + " не найден"));
 
-            // Если amenities пусты или null, передаем null
             List<Room> availableRooms = roomRepository.findAvailableRoomsByHotelIdAndFilters(
-                    hotelId, checkInDate, checkOutDate, (amenities == null || amenities.isEmpty()) ? null : amenities);
+                    hotelId,
+                    checkInDate,
+                    checkOutDate,
+                    (amenities == null || amenities.isEmpty()) ? null : amenities,
+                    (amenities == null || amenities.isEmpty()) ? 0L : (long) amenities.size());
 
             HotelDetailDTO hotelDetailDTO = ModelMapper.mapHotelToDetailDTO(hotel);
             hotelDetailDTO.setRooms(ModelMapper.mapRoomListEntityToRoomListDTO(availableRooms));
@@ -123,6 +126,7 @@ public class HotelService implements IHotelService {
 
         return response;
     }
+
 
 
     @Override
@@ -313,29 +317,30 @@ public class HotelService implements IHotelService {
 
             List<Hotel> filteredHotels = hotelRepository.findAll(specification);
 
-            List<Hotel> hotelsWithAvailableRooms = filteredHotels.stream()
-                    .filter(hotel -> roomRepository.hasAvailableRooms(
-                            hotel.getId(), checkInDate, checkOutDate))
-                    .collect(Collectors.toList());
-
-            List<HotelDTO> hotelDTOs = hotelsWithAvailableRooms.stream()
+            List<HotelDTO> hotelDTOs = filteredHotels.stream()
                     .map(hotel -> {
+                        List<Room> availableRooms = roomRepository.findAvailableRoomsByHotelIdAndFilters(
+                                hotel.getId(),
+                                checkInDate,
+                                checkOutDate,
+                                (amenities == null || amenities.isEmpty()) ? null : amenities,
+                                (amenities == null || amenities.isEmpty()) ? 0L : (long) amenities.size());
+
+                        if (availableRooms.isEmpty()) {
+                            return null;
+                        }
+
                         HotelDTO hotelDTO = ModelMapper.mapHotelEntityToHotelDTO(hotel);
 
-                        List<Room> availableRooms = roomRepository.findAvailableRoomsByHotelIdAndFilters(
-                                hotel.getId(), checkInDate, checkOutDate, (amenities == null || amenities.isEmpty()) ? null : amenities);
+                        Room firstRoom = availableRooms.get(0);
+                        hotelDTO.setPricePerNight(firstRoom.getRoomPrice().doubleValue());
 
-                        if (!availableRooms.isEmpty()) {
-                            Room firstRoom = availableRooms.get(0);
-
-                            hotelDTO.setPricePerNight(firstRoom.getRoomPrice().doubleValue());
-
-                            long days = checkInDate.until(checkOutDate).getDays();
-                            hotelDTO.setPriceForPeriod(firstRoom.getRoomPrice().multiply(BigDecimal.valueOf(days)).doubleValue());
-                        }
+                        long days = checkInDate.until(checkOutDate).getDays();
+                        hotelDTO.setPriceForPeriod(firstRoom.getRoomPrice().multiply(BigDecimal.valueOf(days)).doubleValue());
 
                         return hotelDTO;
                     })
+                    .filter(hotelDTO -> hotelDTO != null)
                     .collect(Collectors.toList());
 
             response.setStatusCode(200);
@@ -348,6 +353,7 @@ public class HotelService implements IHotelService {
 
         return response;
     }
+
 
 }
 

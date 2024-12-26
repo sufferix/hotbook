@@ -19,12 +19,15 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "WHERE r.hotel.id = :hotelId " +
             "AND (b.id IS NULL OR " +
             "     (b.checkOutDate <= :checkIn OR b.checkInDate >= :checkOut)) " +
-            "AND (:amenityIds IS NULL OR a.id IN :amenityIds)")
+            "AND (:amenityIds IS NULL OR " +
+            "     (SELECT COUNT(a2.id) FROM r.amenities a2 WHERE a2.id IN :amenityIds) = :amenityCount)")
     List<Room> findAvailableRoomsByHotelIdAndFilters(
             @Param("hotelId") Long hotelId,
             @Param("checkIn") LocalDate checkInDate,
             @Param("checkOut") LocalDate checkOutDate,
-            @Param("amenityIds") List<Long> amenityIds);
+            @Param("amenityIds") List<Long> amenityIds,
+            @Param("amenityCount") Long amenityCount);
+
 
 
     @Query("SELECT COUNT(r) > 0 FROM Room r " +

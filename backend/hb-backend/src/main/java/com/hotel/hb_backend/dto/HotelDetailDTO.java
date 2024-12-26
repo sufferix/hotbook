@@ -11,7 +11,7 @@ public class HotelDetailDTO {
     private Long id;
     private String name;
     private String city;
-    private String address; // Новое поле
+    private String address;
     private String description;
     private int stars;
     private List<RoomDTO> rooms;
